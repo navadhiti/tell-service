@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/palani-ND/tell-service/issues"
+    "url": "https://github.com/palani-ND/tell-service"
   },
   "engines": {
     "node": "21.1.0",
