@@ -9,13 +9,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/palani-ND/tell-service.git"
+    "url": "https://github.com/palani-ND/tell-service"
   },
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/palani-ND/tell-service"
-  },
   "engines": {
     "node": "21.1.0",
     "npm": "10.2.0"
