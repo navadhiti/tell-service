@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/palani-ND/tell-service.git"
+    "url": "https://github.com/palani-ND/tell-service.git"
   },
   "author": "",
   "license": "ISC",
