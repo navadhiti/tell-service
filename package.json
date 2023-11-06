@@ -13,7 +13,7 @@
     "node": "21.1.0",
     "npm": "10.2.0"
   },
-  "homepage": "https://github.com/palani-ND/tell-service#readme",
+  "homepage": "https://github.com/navadhiti/tell-service#readme",
   "devDependencies": {
     "eslint": "^8.52.0",
     "husky": "^8.0.3",
