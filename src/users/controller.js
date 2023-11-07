@@ -1,4 +1,7 @@
 import handlePasswordEncrypt from '../utils/handlePasswordEncrypt.js';
+import bcrypt from 'bcryptjs';
+import { JWT_PRIVATE_KEY } from '../config.js';
+import jwt from 'jsonwebtoken';
 import userModel from './model.js';
 import { warningResponse, successResponse, errorResponse } from '../utils/handleServerResponse.js';
 
@@ -33,12 +36,57 @@ const register = async (req, res) => {
                 password: hashedPassword,
             });
 
-            await newEmployee.save();
-            return successResponse(res, 200, 'OK', 'New User Added to the Database', req.body);
+            const response = await newEmployee.save();
+
+            const jwtSecretKey = JWT_PRIVATE_KEY;
+            const token = jwt.sign({ email: email }, jwtSecretKey, {
+                expiresIn: '10h',
+            });
+            
+            const data = response.toObject();
+            data.token = token;
+            
+            return successResponse(res, 200, 'OK', 'New User Added to the Database', data);
         }
     } catch (error) {
         return errorResponse(res, error);
     }
 };
 
-export { register };
+const login = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await userModel.findOne({ email: email });
+        if (!user) {
+            return warningResponse(
+                res,
+                404,
+                'NOT_FOUND',
+                'Account Not Exists. Please SignUp before Login'
+            );
+        } else {
+            const passwordMatchResult = bcrypt.compareSync(password, user.password);
+
+            if (!passwordMatchResult) {
+                return warningResponse(res, 401, 'UNAUTHORIZED', 'Incorrect Username or Password');
+            } else {
+                const jwtSecretKey = JWT_PRIVATE_KEY;
+                const token = jwt.sign({ email: email }, jwtSecretKey, {
+                    expiresIn: '10h',
+                });
+
+                const data = {
+                    email: email,
+                    password: password,
+                    token: token,
+                };
+                return successResponse(res, 200, 'OK', 'Login Successful', data);
+            }
+        }
+    } catch (error) {
+        return errorResponse(res, error);
+    }
+};
+
+export { register, login };
