@@ -1,13 +1,8 @@
-import { warningResponse, errorResponse } from '../utils/handleServerResponse.js';
+import { warningResponse } from '../utils/handleServerResponse.js';
 
 const authUser = (req, res, next) => {
-    if (res.locals.userRole !== false) {
-        return warningResponse(
-            res,
-            401,
-            'Unauthorized',
-            'Access Denied.'
-        );
+    if (res.locals.userRole == false) {
+        return warningResponse(res, 401, 'Unauthorized', 'Access Denied.');
     }
     next();
 };

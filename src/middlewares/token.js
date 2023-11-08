@@ -13,12 +13,7 @@ const verifyToken = (req, res, next) => {
         const expirationTime = response.exp;
 
         if (expirationTime <= currentTime)
-        return warningResponse(
-            res,
-            401,
-            'Unauthorized',
-            'Invalid Token.'
-        );
+            return warningResponse(res, 401, 'Unauthorized', 'Invalid Token.');
         res.locals.userRole = response.isAdmin;
         res.locals.userName = response.name;
         next();

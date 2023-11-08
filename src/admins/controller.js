@@ -20,4 +20,16 @@ const singleQA = async (req, res) => {
         return errorResponse(res, error);
     }
 };
-export { singleQA };
+
+const getAllQA = async (req, res) => {
+    const index = parseInt(req.query.index);
+    try {
+        const response = await QA_Model.find();
+        const data = response.slice(index-1, index);
+        return successResponse(res, 200, 'OK', 'Question Retrieved Successfully.', data);
+    } catch (error) {
+        return errorResponse(res, error);
+    }
+};
+
+export { singleQA, getAllQA };

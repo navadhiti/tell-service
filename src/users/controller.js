@@ -58,7 +58,7 @@ const login = async (req, res) => {
 
     try {
         const user = await userModel.findOne({ email: email });
-        console.log(user);
+
         if (!user) {
             return warningResponse(
                 res,
@@ -73,9 +73,13 @@ const login = async (req, res) => {
                 return warningResponse(res, 401, 'UNAUTHORIZED', 'Incorrect Username or Password');
             } else {
                 const jwtSecretKey = JWT_PRIVATE_KEY;
-                const token = jwt.sign({ email: email, name: user.fullName, isAdmin: user.isAdmin }, jwtSecretKey, {
-                    expiresIn: '10h',
-                });
+                const token = jwt.sign(
+                    { email: email, name: user.fullName, isAdmin: user.isAdmin },
+                    jwtSecretKey,
+                    {
+                        expiresIn: '10h',
+                    }
+                );
 
                 const data = {
                     email: email,
