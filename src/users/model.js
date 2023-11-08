@@ -31,6 +31,10 @@ const schema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    isAdmin: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const userModel = mongoose.model('user', schema);

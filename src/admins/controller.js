@@ -1,0 +1,23 @@
+import QA_Model from './model.js';
+import { successResponse, errorResponse } from '../utils/handleServerResponse.js';
+
+const singleQA = async (req, res) => {
+    const { question, answer, department, updatedBy } = req.body;
+
+    try {
+        const newQuestion = new QA_Model({
+            question: question,
+            answer: answer,
+            department: department,
+            createdBy: res.locals.userName,
+            updatedBy: updatedBy,
+        });
+
+        const response = await newQuestion.save();
+
+        return successResponse(res, 200, 'OK', 'New Question Added to the Database', response);
+    } catch (error) {
+        return errorResponse(res, error);
+    }
+};
+export { singleQA };

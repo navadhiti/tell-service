@@ -39,13 +39,13 @@ const register = async (req, res) => {
             const response = await newEmployee.save();
 
             const jwtSecretKey = JWT_PRIVATE_KEY;
-            const token = jwt.sign({ email: email }, jwtSecretKey, {
+            const token = jwt.sign({ email: email, name: fullName, isAdmin: false }, jwtSecretKey, {
                 expiresIn: '10h',
             });
-            
+
             const data = response.toObject();
             data.token = token;
-            
+
             return successResponse(res, 200, 'OK', 'New User Added to the Database', data);
         }
     } catch (error) {
@@ -58,6 +58,7 @@ const login = async (req, res) => {
 
     try {
         const user = await userModel.findOne({ email: email });
+        console.log(user);
         if (!user) {
             return warningResponse(
                 res,
@@ -72,7 +73,7 @@ const login = async (req, res) => {
                 return warningResponse(res, 401, 'UNAUTHORIZED', 'Incorrect Username or Password');
             } else {
                 const jwtSecretKey = JWT_PRIVATE_KEY;
-                const token = jwt.sign({ email: email }, jwtSecretKey, {
+                const token = jwt.sign({ email: email, name: user.fullName, isAdmin: user.isAdmin }, jwtSecretKey, {
                     expiresIn: '10h',
                 });
 
