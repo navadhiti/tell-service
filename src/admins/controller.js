@@ -25,7 +25,7 @@ const getAllQA = async (req, res) => {
     const index = parseInt(req.query.index);
     try {
         const response = await QA_Model.find();
-        if(response.length >= index && index!==0) {
+        if (response.length >= index && index !== 0) {
             const data = response.slice(index - 1, index);
             const dataObject = data[0].toObject();
             dataObject.totalQuestions = response.length;
