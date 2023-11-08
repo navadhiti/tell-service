@@ -1,8 +1,8 @@
 const warningResponse = (res, statusCode, code, message) => {
     res.status(statusCode).json({
         status: 'Error',
-        statusCode: statusCode,
         code: code,
+        statusCode: statusCode,
         message: message,
     });
 };
@@ -11,6 +11,7 @@ const successResponse = (res, statusCode, code, message, data) => {
     res.status(statusCode).json({
         status: 'Success',
         code: code,
+        statusCode, statusCode,
         message: message,
         data: data,
     });
