@@ -29,7 +29,7 @@ const getAllQA = async (req, res) => {
             const data = response.slice(index - 1, index);
             const dataObject = data[0].toObject();
             dataObject.totalQuestions = response.length;
-            return successResponse(res, 200, 'OK', 'Question Retrieved Successfully.', dataObject);
+            return successResponse(res, 200, 'OK', 'Questions & Answers Retrieved Successfully.', dataObject);
         }
         return warningResponse(res, 422, 'Unprocessable Entity', 'You have completed your session');
     } catch (error) {

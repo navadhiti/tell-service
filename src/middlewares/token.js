@@ -5,7 +5,7 @@ import { warningResponse, errorResponse } from '../utils/handleServerResponse.js
 const verifyToken = (req, res, next) => {
     try {
         const token = req.header('x-auth-token');
-
+        
         const jwtSecretKey = JWT_PRIVATE_KEY;
         const response = jwt.verify(token, jwtSecretKey);
 
@@ -16,7 +16,7 @@ const verifyToken = (req, res, next) => {
             return warningResponse(res, 401, 'Unauthorized', 'Invalid Token.');
         res.locals.userRole = response.isAdmin;
         res.locals.userName = response.name;
-        next();
+        next()
     } catch (error) {
         return errorResponse(res, error);
     }

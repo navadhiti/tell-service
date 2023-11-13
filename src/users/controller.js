@@ -8,6 +8,14 @@ import { warningResponse, successResponse, errorResponse } from '../utils/handle
 const register = async (req, res) => {
     const { fullName, email, phoneNo, password } = req.body;
 
+    if (password == undefined) {
+        return warningResponse(
+            res,
+            400,
+            'BAD_REQUEST',
+            'Password field is required.'
+            );
+    }
     if (!/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{8,12}$/.test(password)) {
         return warningResponse(
             res,
@@ -55,6 +63,15 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     const { email, password } = req.body;
+
+    if (!email || !password) {
+        return warningResponse(
+            res,
+            400,
+            'BAD_REQUEST',
+            `${!email ? 'Email' : 'Password'} field is required.`
+        );
+    }
 
     try {
         const user = await userModel.findOne({ email: email });

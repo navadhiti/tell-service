@@ -1,0 +1,124 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "TELL API Documentation",
+    "description": "English learning tool"
+  },
+  "host": "localhost:3000",
+  "basePath": "/api/user",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "create account for new user",
+        "description": "Add Desc Here",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "User Req.Body Data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "fullName": {
+                  "type": "string",
+                  "example": "Sethu K"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "sethu@gmail.com"
+                },
+                "phoneNo": {
+                  "type": "string",
+                  "example": "9876543210"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "zA1@sethu"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Registered Successfully."
+          },
+          "400": {
+            "description": "Bad Request."
+          },
+          "409": {
+            "description": "Account Already Exists. Please Login before SignUp."
+          },
+          "500": {
+            "description": "Server Error."
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "user login with their credentials.",
+        "description": "Add Desc Here",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "User Req.Body Data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "palani@gmail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "zxcASD123@!$"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login Successful."
+          },
+          "400": {
+            "description": "Bad Request."
+          },
+          "404": {
+            "description": "Account Not Exists. Please SignUp before Login."
+          },
+          "500": {
+            "description": "Server Error."
+          }
+        }
+      }
+    }
+  }
+}
