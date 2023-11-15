@@ -1,11 +1,13 @@
 import express from 'express';
-import { register, login } from './controller.js';
+import verifyToken from '../middlewares/token.js';
+import { register, login, logout } from './controller.js';
 
 const router = express.Router();
 
-
-router.post('/register', register
-     /* 
+router.post(
+    '/register',
+    register
+    /* 
     #swagger.tags = ['User']
     #swagger.summary = 'create account for new user'
     #swagger.description = 'Add Desc Here'
@@ -46,8 +48,10 @@ router.post('/register', register
     
     */
 );
-router.post('/login', login
-     /* 
+router.post(
+    '/login',
+    login
+    /* 
     #swagger.tags = ['User']
     #swagger.summary = 'user login with their credentials.'
     #swagger.description = 'Add Desc Here'
@@ -86,5 +90,7 @@ router.post('/login', login
     
     */
 );
+
+router.get('/logout', verifyToken, logout);
 
 export default router;

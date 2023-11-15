@@ -5,8 +5,12 @@ import authUser from '../middlewares/auth.js';
 
 const router = express.Router();
 
-router.post('/singleQA',verifyToken, authUser, singleQA
-     /* 
+router.post(
+    '/singleQA',
+    verifyToken,
+    authUser,
+    singleQA
+    /* 
     #swagger.tags = ['Admin']
     #swagger.summary = 'upload single question and answer'
     #swagger.description = 'Add Desc Here'
@@ -42,8 +46,11 @@ router.post('/singleQA',verifyToken, authUser, singleQA
     */
 );
 
-router.get('/getAllQA', verifyToken, getAllQA
-     /* 
+router.get(
+    '/getAllQA',
+    verifyToken,
+    getAllQA
+    /* 
     #swagger.tags = ['User & Admin']
     #swagger.summary = 'get all questions and answers'
     #swagger.description = 'Add Desc Here'

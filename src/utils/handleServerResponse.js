@@ -1,28 +1,51 @@
-const warningResponse = (res, statusCode, code, message) => {
-    res.status(statusCode).json({
-        status: 'Error',
-        code: code,
-        statusCode: statusCode,
-        message: message,
-    });
+import { uid } from 'uid';
+
+const successResponse = (responseMessage) => {
+    return {
+        result: 'Success',
+        responseObj: {
+            responseId: uid(16),
+            responseTs: `${Math.floor(Date.now() / 1000)}`,
+            responseApiVersion: 'v1',
+            responseCode: 200,
+            responseMessage: 'successfully done',
+            responseDataParams: {
+                data: responseMessage,
+            },
+        },
+    };
 };
 
-const successResponse = (res, statusCode, code, message, data) => {
-    res.status(statusCode).json({
-        status: 'Success',
-        code: code,
-        statusCode: statusCode,
-        message: message,
-        data: data,
-    });
+const validationResponse = (validaitonMessage) => {
+    return {
+        result: 'Validaiton',
+        responseObj: {
+            responseId: uid(16),
+            responseTs: `${Math.floor(Date.now() / 1000)}`,
+            responseApiVersion: 'v1',
+            responseCode: 400,
+            responseMessage: 'Error in request format',
+            responseDataParams: {
+                data: validaitonMessage,
+            },
+        },
+    };
 };
 
-const errorResponse = (res, error) => {
-    res.status(400).json({
-        status: 'Error',
-        code: 400,
-        error: error,
-    });
+const errorResponse = (errorMessage) => {
+    return {
+        result: 'Error',
+        responseObj: {
+            responseId: uid(16),
+            responseTs: `${Math.floor(Date.now() / 1000)}`,
+            responseApiVersion: 'v1',
+            responseCode: 401,
+            responseMessage: 'Error in Process',
+            responseDataParams: {
+                data: errorMessage,
+            },
+        },
+    };
 };
 
-export { warningResponse, successResponse, errorResponse };
+export { successResponse, validationResponse, errorResponse };

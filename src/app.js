@@ -1,5 +1,5 @@
 /*
- * Run the project and access the documentation at: http://localhost:3000/doc
+ * Run the project and access the documentation at: http://localhost:3000/user/doc & http://localhost:3000/admin/doc
  *
  * Use the command below to generate the documentation without starting the project:
  * $ npm run start
@@ -26,8 +26,12 @@ app.use(cors());
 
 app.use('/api', router);
 
-app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocumentAdmin))
-app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocumentUser))
+const useSchema = (schema) => (req, res, next) => {
+    swaggerUi.setup(schema)(req, res, next);
+};  
+
+app.use('/user/doc', swaggerUi.serve, useSchema(swaggerDocumentUser));
+app.use('/admin/doc', swaggerUi.serve, useSchema(swaggerDocumentAdmin));
 
 const port = process.env.PORT;
 app.listen(port);
