@@ -34,10 +34,19 @@ const adminDoc = {
 const outputFileUser = './utils/swagger-output-user.json';
 const outputFileAdmin = './utils/swagger-output-admin.json';
 
-swaggerAutogen()(outputFileUser, ['./users/routes.js'], userDoc).then(() => {
-    import('./app.js');
-});
+const runSwagger = async () => {
+    try {
+      await swaggerAutogen()(outputFileUser, ['./users/routes.js'], userDoc);
+      await swaggerAutogen()(outputFileAdmin, ['./admins/routes.js'], adminDoc);
+    } catch (error) {
+        const responseData = errorResponse(error);
+        return res.status(400).json(responseData);    }
+  };
+  
+  runSwagger();
+  
 
-swaggerAutogen()(outputFileAdmin, ['./admins/routes.js'], adminDoc).then(() => {
-    import('./app.js');
-});
+
+
+
+
