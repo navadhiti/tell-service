@@ -41,6 +41,11 @@ router.post(
         return res.status(400).send(false);
     }
     ...
+    else if(...) {
+        // #swagger.responses[401] = { description: 'Unauthorized Access Error.'}
+        return res.status(401).send(false);
+    }
+    ...
     // #swagger.responses[500] = { description: 'Server Error.'}
         return res.status(500).send(false);
     */
@@ -73,8 +78,13 @@ router.get(
     }
     ...
     else if(...) {
-        // #swagger.responses[422] = { description: 'Unprocessable Entity. Indicates completion of the session.' }
-        return res.status(422).send(false);
+        // #swagger.responses[400] = { description: 'Bad Request.'}
+        return res.status(400).send(false);
+    }
+    ...
+    else if(...) {
+        // #swagger.responses[401] = { description: 'Unauthorized Access Error.'}
+        return res.status(401).send(false);
     }
     ...
     // #swagger.responses[500] = { description: 'Server Error.'}

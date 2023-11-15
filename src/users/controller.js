@@ -97,6 +97,7 @@ const login = async (req, res) => {
                     password: password,
                     token: token,
                 };
+
                 const responseData = successResponse(responseMessage);
                 return res.status(200).json(responseData);
             }
@@ -108,8 +109,12 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-    const responseData = successResponse('Logged out Successful');
-    return res.status(200).json(responseData);
+    if (res.locals.decodedToken) {
+        const responseData = successResponse('Logged out Successful.');
+        return res.status(200).json(responseData);
+    }
+    const responseData = errorResponse('Invalid token');
+    return res.status(401).json(responseData);
 };
 
 export { register, login, logout };

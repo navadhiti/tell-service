@@ -1,5 +1,5 @@
 import swaggerAutogen from 'swagger-autogen';
-
+import logger from './utils/handleServerLog.js';
 const userDoc = {
     info: {
         version: '1.0.0',
@@ -9,6 +9,15 @@ const userDoc = {
     host: 'localhost:3000',
     basePath: '/api/user',
     schemes: ['http', 'https'],
+    securityDefinitions: {
+        apiKeyAuth: {
+            type: 'apiKey',
+            in: 'header',
+            name: 'x-auth-token',
+            description: 'Authentication token',
+        },
+    },
+    security: [{ apiKeyAuth: [] }],
 };
 
 const adminDoc = {
@@ -36,17 +45,11 @@ const outputFileAdmin = './utils/swagger-output-admin.json';
 
 const runSwagger = async () => {
     try {
-      await swaggerAutogen()(outputFileUser, ['./users/routes.js'], userDoc);
-      await swaggerAutogen()(outputFileAdmin, ['./admins/routes.js'], adminDoc);
+        await swaggerAutogen()(outputFileUser, ['./users/routes.js'], userDoc);
+        await swaggerAutogen()(outputFileAdmin, ['./admins/routes.js'], adminDoc);
     } catch (error) {
-        const responseData = errorResponse(error);
-        return res.status(400).json(responseData);    }
-  };
-  
-  runSwagger();
-  
+        logger.log('error', 'Swagger Document generate Error:', error);
+    }
+};
 
-
-
-
-
+runSwagger();

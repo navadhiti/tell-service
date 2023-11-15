@@ -34,13 +34,13 @@ router.post(
     }
     ...
     else if(...) {
-        // #swagger.responses[409] = { description: 'Account Already Exists. Please Login before SignUp.' }
-        return res.status(409).send(false);
+        // #swagger.responses[400] = { description: 'validation Error.'}
+        return res.status(400).send(false);
     }
     ...
     else if(...) {
-        // #swagger.responses[400] = { description: 'Bad Request.'}
-        return res.status(400).send(false);
+        // #swagger.responses[401] = { description: 'Unauthorized Access error.'}
+        return res.status(401).send(false);
     }
     ...
     // #swagger.responses[500] = { description: 'Server Error.'}
@@ -76,21 +76,38 @@ router.post(
     }
     ...
     else if(...) {
-        // #swagger.responses[404] = { description: 'Account Not Exists. Please SignUp before Login.' }
-        return res.status(404).send(false);
-    }
-    ...
-    else if(...) {
-        // #swagger.responses[400] = { description: 'Bad Request.'}
+        // #swagger.responses[400] = { description: 'validation Error.' }
         return res.status(400).send(false);
     }
     ...
-    // #swagger.responses[500] = { description: 'Server Error.'}
+    else if(...) {
+        // #swagger.responses[401] = { description: 'Unauthorized Access Error.' }
+        return res.status(401).send(false);
+    }
+    ...
+    // #swagger.responses[500] = { description: 'Server Error.' }
     return res.status(500).send(false);
     
     */
 );
-
-router.get('/logout', verifyToken, logout);
+router.get(
+    '/logout',
+    verifyToken,
+    logout
+    /*
+    #swagger.tags = ['User & Admin']
+    #swagger.summary = 'Logs out current logged in user session.'
+    #swagger.description = 'Add Desc Here'
+    #swagger.produces = ['application/json']
+    ...
+    // #swagger.responses[200] = { description: 'Logged out Successful.' }
+    return res.status(200).send(false);
+    }
+    ...
+    // #swagger.responses[401] = { description: 'Unauthorized Access Error.' }
+    return res.status(401).send(false);
+    
+    */
+);
 
 export default router;
