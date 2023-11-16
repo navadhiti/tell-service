@@ -18,32 +18,26 @@ const successResponse = (responseMessage) => {
 
 const validationResponse = (validaitonMessage) => {
     return {
-        result: 'Validaiton',
+        result: 'Validaiton Error',
         responseObj: {
             responseId: uid(16),
             responseTs: `${Math.floor(Date.now() / 1000)}`,
             responseApiVersion: 'v1',
             responseCode: 400,
-            responseMessage: 'Error in request format',
-            responseDataParams: {
-                data: validaitonMessage,
-            },
+            responseMessage: validaitonMessage,
         },
     };
 };
 
-const errorResponse = (errorMessage) => {
+const errorResponse = (code, errorMessage) => {
     return {
         result: 'Error',
         responseObj: {
             responseId: uid(16),
             responseTs: `${Math.floor(Date.now() / 1000)}`,
             responseApiVersion: 'v1',
-            responseCode: 401,
-            responseMessage: 'Error in Process',
-            responseDataParams: {
-                data: errorMessage,
-            },
+            responseCode: code,
+            responseMessage: errorMessage,
         },
     };
 };

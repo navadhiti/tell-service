@@ -13,14 +13,14 @@ const verifyToken = (req, res, next) => {
         const expirationTime = response.exp;
 
         if (expirationTime <= currentTime) {
-            const responseData = errorResponse('Invalid Token.');
-            return res.status(401).json(responseData);
+            const responseData = errorResponse(401, 'Invalid Token.');
+            return res.status(200).json(responseData);
         }
         res.locals.decodedToken = response;
         next();
     } catch (error) {
-        const responseData = errorResponse(error);
-        return res.status(401).json(responseData);
+        const responseData = errorResponse(400, error);
+        return res.status(400).json(responseData);
     }
 };
 

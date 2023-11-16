@@ -22,7 +22,7 @@ const singleQA = async (req, res) => {
         const responseData = successResponse(response);
         return res.status(200).json(responseData);
     } catch (error) {
-        const responseData = errorResponse(error);
+        const responseData = errorResponse(400, error);
         return res.status(400).json(responseData);
     }
 };
@@ -39,9 +39,9 @@ const getAllQA = async (req, res) => {
             return res.status(200).json(responseData);
         }
         const responseData = validationResponse('You have completed your session.');
-        return res.status(400).json(responseData);
+        return res.status(200).json(responseData);
     } catch (error) {
-        const responseData = errorResponse(error);
+        const responseData = errorResponse(400, error);
         return res.status(400).json(responseData);
     }
 };
