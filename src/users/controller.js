@@ -28,7 +28,7 @@ const register = async (req, res) => {
         if (user) {
             const responseData = errorResponse(
                 409,
-                'Account Already Exists. Please Login before SignUp'
+                'Account Already Exists.'
             );
             return res.status(200).json(responseData);
         } else {
@@ -81,10 +81,11 @@ const login = async (req, res) => {
             const passwordMatchResult = bcrypt.compareSync(password, user.password);
 
             if (!passwordMatchResult) {
-                const responseData = errorResponse(401, 'Incorrect Username or Password');
+                const responseData = errorResponse(401, 'Incorrect Email or Password');
                 return res.status(200).json(responseData);
             } else {
                 const jwtSecretKey = JWT_PRIVATE_KEY;
+                
                 const token = jwt.sign(
                     { email: email, name: user.fullName, isAdmin: user.isAdmin },
                     jwtSecretKey,
