@@ -57,7 +57,7 @@ const register = async (req, res) => {
         }
     } catch (error) {
         const responseData = errorResponse(400,error);
-        return res.status(400).json(responseData);
+        return res.status(200).json(responseData);
     }
 };
 
@@ -89,7 +89,7 @@ const login = async (req, res) => {
                     { email: email, name: user.fullName, isAdmin: user.isAdmin },
                     jwtSecretKey,
                     {
-                        expiresIn: '10h',
+                        expiresIn: '48h',
                     }
                 );
 
@@ -105,7 +105,7 @@ const login = async (req, res) => {
         }
     } catch (error) {
         const responseData = errorResponse(400, error);
-        return res.status(400).json(responseData);
+        return res.status(200).json(responseData);
     }
 };
 

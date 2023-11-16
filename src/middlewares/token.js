@@ -20,7 +20,7 @@ const verifyToken = (req, res, next) => {
         next();
     } catch (error) {
         const responseData = errorResponse(400, error);
-        return res.status(400).json(responseData);
+        return res.status(200).json(responseData);
     }
 };
 
