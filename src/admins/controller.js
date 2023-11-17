@@ -2,7 +2,6 @@ import QA_Model from './model.js';
 import {
     successResponse,
     validationResponse,
-    errorResponse,
 } from '../utils/handleServerResponse.js';
 
 const singleQA = async (req, res) => {
@@ -13,17 +12,17 @@ const singleQA = async (req, res) => {
             question: question,
             answer: answer,
             department: department,
-            createdBy: res.locals.decodedToken.name,
+            createdBy: res.locals.decodedToken.payload.name,
             updatedBy: updatedBy,
         });
 
-        const response = await newQuestion.save();
+        const data = await newQuestion.save();
 
-        const responseData = successResponse(response);
+        const responseData = successResponse('New Question Added Successfully.', data);
         return res.status(200).json(responseData);
     } catch (error) {
-        const responseData = errorResponse(400, error);
-        return res.status(200).json(responseData);
+        globalErrorHandler(res, error);
+
     }
 };
 
@@ -35,14 +34,13 @@ const getAllQA = async (req, res) => {
             const data = response.slice(index - 1, index);
             const dataObject = data[0].toObject();
             dataObject.totalQuestions = response.length;
-            const responseData = successResponse(dataObject);
+            const responseData = successResponse('Questions & Answers Retrieved Successfully.', dataObject);
             return res.status(200).json(responseData);
         }
         const responseData = validationResponse('You have completed your session.');
         return res.status(200).json(responseData);
     } catch (error) {
-        const responseData = errorResponse(400, error);
-        return res.status(200).json(responseData);
+        globalErrorHandler(res, error);
     }
 };
 

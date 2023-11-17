@@ -3,21 +3,27 @@ import bcrypt from 'bcryptjs';
 
 const handlePasswordEncrypt = async (password) => {
     return new Promise((resolve, reject) => {
-        bcrypt.genSalt(10, (err, salt) => {
-            if (err) {
-                logger.log('error', err);
-                reject(err);
-            } else {
-                bcrypt.hash(password, salt, (err, hashedPassword) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(hashedPassword);
+        try {
+            bcrypt.genSalt(10, (error, salt) => {
+                if (error) {
+                    return reject(error);
+                }
+                
+                bcrypt.hash(password, salt, (error, hashedPassword) => {
+                    if (error) {
+                        return reject(error);
                     }
+                    
+                    resolve(hashedPassword);
                 });
-            }
-        });
+            });
+        } catch (error) {
+            logger.log('error', error);
+            reject(error);
+        }
     });
 };
+
+
 
 export default handlePasswordEncrypt;

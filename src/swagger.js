@@ -6,7 +6,7 @@ const userDoc = {
         title: 'TELL API Documentation',
         description: 'English learning tool',
     },
-    host: 'localhost:3000',
+    host: 'localhost:6000',
     basePath: '/api/user',
     schemes: ['http', 'https'],
     securityDefinitions: {
@@ -26,7 +26,7 @@ const adminDoc = {
         title: 'TELL API Documentation',
         description: 'English learning tool',
     },
-    host: 'localhost:3000',
+    host: 'localhost:6000',
     basePath: '/api/admin',
     schemes: ['http', 'https'],
     securityDefinitions: {

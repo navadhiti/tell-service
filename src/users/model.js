@@ -10,7 +10,7 @@ const schema = new mongoose.Schema({
         required: true,
         validate: {
             validator: function (email) {
-                return /^[a-z0-9.]+@[a-z]+\.[a-z]{3}$/.test(email);
+                return /^[a-z0-9]+(?:\.[a-z0-9]+)?@[a-z]+\.[a-z]{3}$/.test(email);
             },
             message:
                 'Invalid Email Address. It should be in the format: user@gmail.com or user@navadhiti.com',

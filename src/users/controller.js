@@ -1,13 +1,14 @@
 import handlePasswordEncrypt from '../utils/handlePasswordEncrypt.js';
 import bcrypt from 'bcryptjs';
-import { JWT_PRIVATE_KEY } from '../config.js';
-import jwt from 'jsonwebtoken';
+import { JWT_SIGNIN_PRIVATE_KEY, JWT_ENCRYPTION_PRIVATE_KEY } from '../config.js';
+import * as jose from 'jose';
 import userModel from './model.js';
 import {
     successResponse,
     validationResponse,
     errorResponse,
 } from '../utils/handleServerResponse.js';
+import globalErrorHandler from '../utils/globalErrorHandler.js';
 
 const register = async (req, res) => {
     const { fullName, email, phoneNo, password } = req.body;
@@ -22,6 +23,7 @@ const register = async (req, res) => {
         );
         return res.status(200).json(responseData);
     }
+
     try {
         const user = await userModel.findOne({ email: email });
 
@@ -40,24 +42,29 @@ const register = async (req, res) => {
                 phoneNo: phoneNo,
                 password: hashedPassword,
             });
-
             const response = await newEmployee.save();
 
-            const jwtSecretKey = JWT_PRIVATE_KEY;
-            const token = jwt.sign({ email: email, name: fullName, isAdmin: false }, jwtSecretKey, {
-                expiresIn: '48h',
-            });
+            const jwtSigninKey = new TextEncoder().encode(JWT_SIGNIN_PRIVATE_KEY);
+                const jwtSignedToken = await new jose.SignJWT({ email: email, name: response.fullName, isAdmin: response.isAdmin })
+                    .setProtectedHeader({ alg: 'HS256' })
+                    .setExpirationTime('48h')
+                    .sign(jwtSigninKey)
 
-            const responseMessage = response.toObject();
-            responseMessage.password = password;
-            responseMessage.token = token;
+                const jwtEncryptionKey = jose.base64url.decode(JWT_ENCRYPTION_PRIVATE_KEY);
+                const jwtEncryptedToken = await new jose.EncryptJWT({jwtSignedToken})
+                    .setProtectedHeader({ alg: 'dir', enc: 'A128CBC-HS256' })
+                    .setExpirationTime('48h')
+                    .encrypt(jwtEncryptionKey);
 
-            const responseData = successResponse(responseMessage);
+            const data = response.toObject();
+            data.password = password;
+            data.token = jwtEncryptedToken;
+
+            const responseData = successResponse('Register Successful', data);
             return res.status(200).json(responseData);
         }
     } catch (error) {
-        const responseData = errorResponse(400,error);
-        return res.status(200).json(responseData);
+        globalErrorHandler(res, error);
     }
 };
 
@@ -68,6 +75,11 @@ const login = async (req, res) => {
         const responseData = validationResponse(
             `${!email ? 'Email' : 'Password'} field is required.`
         );
+        return res.status(200).json(responseData);
+    }
+
+    if (!/^[a-z0-9]+(?:\.[a-z0-9]+)?@[a-z]+\.[a-z]{3}$/.test(email)) {
+        const responseData = validationResponse(`Email is invalid`);
         return res.status(200).json(responseData);
     }
 
@@ -84,39 +96,46 @@ const login = async (req, res) => {
                 const responseData = errorResponse(401, 'Incorrect Email or Password');
                 return res.status(200).json(responseData);
             } else {
-                const jwtSecretKey = JWT_PRIVATE_KEY;
-                
-                const token = jwt.sign(
-                    { email: email, name: user.fullName, isAdmin: user.isAdmin },
-                    jwtSecretKey,
-                    {
-                        expiresIn: '48h',
-                    }
-                );
+                const jwtSigninKey = new TextEncoder().encode(JWT_SIGNIN_PRIVATE_KEY);
+                const jwtSignedToken = await new jose.SignJWT({ email: email, name: user.fullName, isAdmin: user.isAdmin })
+                    .setProtectedHeader({ alg: 'HS256' })
+                    .setExpirationTime('48h')
+                    .sign(jwtSigninKey)
 
-                const responseMessage = {
+                const jwtEncryptionKey = jose.base64url.decode(JWT_ENCRYPTION_PRIVATE_KEY);
+                const jwtEncryptedToken = await new jose.EncryptJWT({jwtSignedToken})
+                    .setProtectedHeader({ alg: 'dir', enc: 'A128CBC-HS256' })
+                    .setExpirationTime('48h')
+                    .encrypt(jwtEncryptionKey);
+
+                const data = {
                     email: email,
                     password: password,
-                    token: token,
+                    token: jwtEncryptedToken,
                 };
 
-                const responseData = successResponse(responseMessage);
+                const responseData = successResponse('Login Successful', data);
                 return res.status(200).json(responseData);
             }
         }
     } catch (error) {
-        const responseData = errorResponse(400, error);
-        return res.status(200).json(responseData);
+        globalErrorHandler(res, error);
+
     }
 };
 
 const logout = async (req, res) => {
-    if (res.locals.decodedToken) {
-        const responseData = successResponse('Logged out Successful.');
+    try {
+        if (res.locals.decodedToken) {
+            const responseData = successResponse('Logged out Successful.', null);
+            return res.status(200).json(responseData);
+        }
+        const responseData = errorResponse(401, 'Invalid token');
         return res.status(200).json(responseData);
+    } catch (error) {
+        globalErrorHandler(res, error);
+
     }
-    const responseData = errorResponse(401, 'Invalid token');
-    return res.status(200).json(responseData);
 };
 
 export { register, login, logout };

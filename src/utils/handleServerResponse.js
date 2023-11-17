@@ -1,6 +1,6 @@
 import { uid } from 'uid';
 
-const successResponse = (responseMessage) => {
+const successResponse = (responseMessage, data) => {
     return {
         result: 'Success',
         responseObj: {
@@ -8,9 +8,9 @@ const successResponse = (responseMessage) => {
             responseTs: `${Math.floor(Date.now() / 1000)}`,
             responseApiVersion: 'v1',
             responseCode: 200,
-            responseMessage: 'successfully done',
+            responseMessage: responseMessage,
             responseDataParams: {
-                data: responseMessage,
+                data: data,
             },
         },
     };
