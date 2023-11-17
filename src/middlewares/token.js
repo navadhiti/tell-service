@@ -10,9 +10,12 @@ const verifyToken = async (req, res, next) => {
         const jwtSigninKey = new TextEncoder().encode(JWT_SIGNIN_PRIVATE_KEY);
         const jwtEncryptionKey = jose.base64url.decode(JWT_ENCRYPTION_PRIVATE_KEY);
 
-        const jwtDecryptedToken = await jose.jwtDecrypt(token, jwtEncryptionKey)
-        const jwtSignedToken = await jose.jwtVerify(jwtDecryptedToken.payload.jwtSignedToken, jwtSigninKey)
-        
+        const jwtDecryptedToken = await jose.jwtDecrypt(token, jwtEncryptionKey);
+        const jwtSignedToken = await jose.jwtVerify(
+            jwtDecryptedToken.payload.jwtSignedToken,
+            jwtSigninKey
+        );
+
         const currentTime = Math.floor(Date.now() / 1000);
         const expirationTime = jwtSignedToken.payload.exp;
 

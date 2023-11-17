@@ -1,8 +1,6 @@
 import QA_Model from './model.js';
-import {
-    successResponse,
-    validationResponse,
-} from '../utils/handleServerResponse.js';
+import { successResponse, validationResponse } from '../utils/handleServerResponse.js';
+import globalErrorHandler from '../utils/globalErrorHandler.js';
 
 const singleQA = async (req, res) => {
     const { question, answer, department, updatedBy } = req.body;
@@ -22,7 +20,6 @@ const singleQA = async (req, res) => {
         return res.status(200).json(responseData);
     } catch (error) {
         globalErrorHandler(res, error);
-
     }
 };
 
@@ -34,7 +31,10 @@ const getAllQA = async (req, res) => {
             const data = response.slice(index - 1, index);
             const dataObject = data[0].toObject();
             dataObject.totalQuestions = response.length;
-            const responseData = successResponse('Questions & Answers Retrieved Successfully.', dataObject);
+            const responseData = successResponse(
+                'Questions & Answers Retrieved Successfully.',
+                dataObject
+            );
             return res.status(200).json(responseData);
         }
         const responseData = validationResponse('You have completed your session.');

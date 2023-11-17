@@ -28,10 +28,7 @@ const register = async (req, res) => {
         const user = await userModel.findOne({ email: email });
 
         if (user) {
-            const responseData = errorResponse(
-                409,
-                'Account Already Exists.'
-            );
+            const responseData = errorResponse(409, 'Account Already Exists.');
             return res.status(200).json(responseData);
         } else {
             const hashedPassword = await handlePasswordEncrypt(password);
@@ -45,16 +42,20 @@ const register = async (req, res) => {
             const response = await newEmployee.save();
 
             const jwtSigninKey = new TextEncoder().encode(JWT_SIGNIN_PRIVATE_KEY);
-                const jwtSignedToken = await new jose.SignJWT({ email: email, name: response.fullName, isAdmin: response.isAdmin })
-                    .setProtectedHeader({ alg: 'HS256' })
-                    .setExpirationTime('48h')
-                    .sign(jwtSigninKey)
+            const jwtSignedToken = await new jose.SignJWT({
+                email: email,
+                name: response.fullName,
+                isAdmin: response.isAdmin,
+            })
+                .setProtectedHeader({ alg: 'HS256' })
+                .setExpirationTime('48h')
+                .sign(jwtSigninKey);
 
-                const jwtEncryptionKey = jose.base64url.decode(JWT_ENCRYPTION_PRIVATE_KEY);
-                const jwtEncryptedToken = await new jose.EncryptJWT({jwtSignedToken})
-                    .setProtectedHeader({ alg: 'dir', enc: 'A128CBC-HS256' })
-                    .setExpirationTime('48h')
-                    .encrypt(jwtEncryptionKey);
+            const jwtEncryptionKey = jose.base64url.decode(JWT_ENCRYPTION_PRIVATE_KEY);
+            const jwtEncryptedToken = await new jose.EncryptJWT({ jwtSignedToken })
+                .setProtectedHeader({ alg: 'dir', enc: 'A128CBC-HS256' })
+                .setExpirationTime('48h')
+                .encrypt(jwtEncryptionKey);
 
             const data = response.toObject();
             data.password = password;
@@ -79,7 +80,7 @@ const login = async (req, res) => {
     }
 
     if (!/^[a-z0-9]+(?:\.[a-z0-9]+)?@[a-z]+\.[a-z]{3}$/.test(email)) {
-        const responseData = validationResponse(`Email is invalid`);
+        const responseData = validationResponse('Email is invalid');
         return res.status(200).json(responseData);
     }
 
@@ -87,7 +88,10 @@ const login = async (req, res) => {
         const user = await userModel.findOne({ email: email });
 
         if (!user) {
-            const responseData = errorResponse(404, 'Account Not Exists. Please SignUp before Login');
+            const responseData = errorResponse(
+                404,
+                'Account Not Exists. Please SignUp before Login'
+            );
             return res.status(200).json(responseData);
         } else {
             const passwordMatchResult = bcrypt.compareSync(password, user.password);
@@ -97,13 +101,17 @@ const login = async (req, res) => {
                 return res.status(200).json(responseData);
             } else {
                 const jwtSigninKey = new TextEncoder().encode(JWT_SIGNIN_PRIVATE_KEY);
-                const jwtSignedToken = await new jose.SignJWT({ email: email, name: user.fullName, isAdmin: user.isAdmin })
+                const jwtSignedToken = await new jose.SignJWT({
+                    email: email,
+                    name: user.fullName,
+                    isAdmin: user.isAdmin,
+                })
                     .setProtectedHeader({ alg: 'HS256' })
                     .setExpirationTime('48h')
-                    .sign(jwtSigninKey)
+                    .sign(jwtSigninKey);
 
                 const jwtEncryptionKey = jose.base64url.decode(JWT_ENCRYPTION_PRIVATE_KEY);
-                const jwtEncryptedToken = await new jose.EncryptJWT({jwtSignedToken})
+                const jwtEncryptedToken = await new jose.EncryptJWT({ jwtSignedToken })
                     .setProtectedHeader({ alg: 'dir', enc: 'A128CBC-HS256' })
                     .setExpirationTime('48h')
                     .encrypt(jwtEncryptionKey);
@@ -120,7 +128,6 @@ const login = async (req, res) => {
         }
     } catch (error) {
         globalErrorHandler(res, error);
-
     }
 };
 
@@ -134,7 +141,6 @@ const logout = async (req, res) => {
         return res.status(200).json(responseData);
     } catch (error) {
         globalErrorHandler(res, error);
-
     }
 };
 
