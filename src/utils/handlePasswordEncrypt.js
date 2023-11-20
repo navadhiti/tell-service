@@ -18,7 +18,7 @@ const handlePasswordEncrypt = async (password) => {
                 });
             });
         } catch (error) {
-            logger.log('error', error);
+            logger.log('Password Encrypt Error', error);
             reject(error);
         }
     });

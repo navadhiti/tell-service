@@ -35,12 +35,12 @@ router.post(
     ...
     else if(...) {
         // #swagger.responses[400] = { description: 'validation Error.'}
-        return res.status(400).send(false);
+        return res.status(200).send(false);
     }
     ...
     else if(...) {
-        // #swagger.responses[401] = { description: 'Unauthorized Access error.'}
-        return res.status(401).send(false);
+        // #swagger.responses[409] = { description: 'Account Already Exists.'}
+        return res.status(200).send(false);
     }
     ...
     // #swagger.responses[500] = { description: 'Server Error.'}
@@ -77,12 +77,17 @@ router.post(
     ...
     else if(...) {
         // #swagger.responses[400] = { description: 'validation Error.' }
-        return res.status(400).send(false);
+        return res.status(200).send(false);
     }
     ...
     else if(...) {
-        // #swagger.responses[401] = { description: 'Unauthorized Access Error.' }
-        return res.status(401).send(false);
+        // #swagger.responses[401] = { description: 'Incorrect Email or Password.' }
+        return res.status(200).send(false);
+    }
+    ...
+    else if(...) {
+        // #swagger.responses[404] = { description: 'Account Not Exists.' }
+        return res.status(200).send(false);
     }
     ...
     // #swagger.responses[500] = { description: 'Server Error.' }
@@ -104,8 +109,8 @@ router.get(
     return res.status(200).send(false);
     }
     ...
-    // #swagger.responses[401] = { description: 'Unauthorized Access Error.' }
-    return res.status(401).send(false);
+    // #swagger.responses[401] = { description: 'Invalid token.' }
+    return res.status(200).send(false);
     
     */
 );

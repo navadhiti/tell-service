@@ -38,12 +38,12 @@ router.post(
     ...
     else if(...) {
         // #swagger.responses[400] = { description: 'Bad Request.'}
-        return res.status(400).send(false);
+        return res.status(200).send(false);
     }
     ...
     else if(...) {
-        // #swagger.responses[401] = { description: 'Unauthorized Access Error.'}
-        return res.status(401).send(false);
+        // #swagger.responses[401] = { description: 'Invalid Token or Unauthorized Access to the user.'}
+        return res.status(200).send(false);
     }
     ...
     // #swagger.responses[500] = { description: 'Server Error.'}
@@ -79,12 +79,12 @@ router.get(
     ...
     else if(...) {
         // #swagger.responses[400] = { description: 'Bad Request.'}
-        return res.status(400).send(false);
+        return res.status(200).send(false);
     }
     ...
     else if(...) {
-        // #swagger.responses[401] = { description: 'Unauthorized Access Error.'}
-        return res.status(401).send(false);
+        // #swagger.responses[401] = { description: 'Unauthorized Access to the user.'}
+        return res.status(200).send(false);
     }
     ...
     // #swagger.responses[500] = { description: 'Server Error.'}

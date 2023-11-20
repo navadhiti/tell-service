@@ -1,12 +1,13 @@
 import swaggerAutogen from 'swagger-autogen';
 import logger from './utils/handleServerLog.js';
+
 const userDoc = {
     info: {
         version: '1.0.0',
         title: 'TELL API Documentation',
         description: 'English learning tool',
     },
-    host: 'localhost:6000',
+    host: 'localhost:3000',
     basePath: '/api/user',
     schemes: ['http', 'https'],
     securityDefinitions: {
@@ -26,7 +27,7 @@ const adminDoc = {
         title: 'TELL API Documentation',
         description: 'English learning tool',
     },
-    host: 'localhost:6000',
+    host: 'localhost:3000',
     basePath: '/api/admin',
     schemes: ['http', 'https'],
     securityDefinitions: {

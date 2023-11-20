@@ -10,7 +10,7 @@
     "main": "src/app.js",
     "scripts": {
         "start": "nodemon src/app.js",
-        "lint:fix": "eslint src --fix .&& prettier src --write .",
+        "lint:fix": "eslint src/ --fix && prettier src/ --write",
         "prepare": "husky install",
         "swagger": "node src/swagger.js"
     },
@@ -36,10 +36,5 @@
         "swagger-ui-express": "5.0.0",
         "uid": "2.0.2",
         "winston": "3.11.0"
-    },
-    "nodemonConfig": {
-        "env": {
-            "NODE_OPTIONS": "--no-warnings"
-        }
     }
 }

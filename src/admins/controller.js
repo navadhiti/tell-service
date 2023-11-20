@@ -25,6 +25,11 @@ const singleQA = async (req, res) => {
 
 const getAllQA = async (req, res) => {
     const index = parseInt(req.query.index);
+    if (index == undefined || isNaN(index)) {
+        const responseData = validationResponse('index params is required.');
+        return res.status(200).json(responseData);
+    }
+
     try {
         const response = await QA_Model.find();
         if (response.length >= index && index !== 0) {
