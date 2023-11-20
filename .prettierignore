@@ -15,6 +15,11 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+# swagger doc 
+
+src/utils/swagger-output-admin.json
+src/utils/swagger-output-user.json
+
 # Environment varibales file
 
 .env
