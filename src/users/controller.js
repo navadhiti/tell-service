@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import { JWT_SIGNIN_PRIVATE_KEY, JWT_ENCRYPTION_PRIVATE_KEY } from '../config.js';
 import * as jose from 'jose';
 import userModel from './model.js';
+import { registerValidationSchema, loginValidationSchema } from '../users/validation.js';
 import {
     successResponse,
     validationResponse,
@@ -13,14 +14,9 @@ import globalErrorHandler from '../utils/globalErrorHandler.js';
 const register = async (req, res) => {
     const { fullName, email, phoneNo, password } = req.body;
 
-    if (password == undefined) {
-        const responseData = validationResponse('Password field is required.');
-        return res.status(200).json(responseData);
-    }
-    if (!/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{8,12}$/.test(password)) {
-        const responseData = validationResponse(
-            'Invalid Password. It must be 8-12 characters long and contain only valid characters: letters, numbers, @, $, !, %, *, ?, or &'
-        );
+    const { error } = registerValidationSchema.validate(req.body);
+    if (error) {
+        const responseData = validationResponse(error.message);
         return res.status(200).json(responseData);
     }
 
@@ -72,15 +68,9 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-        const responseData = validationResponse(
-            `${!email ? 'Email' : 'Password'} field is required.`
-        );
-        return res.status(200).json(responseData);
-    }
-
-    if (!/^[a-z0-9]+(?:\.[a-z0-9]+)?@[a-z]+\.[a-z]{3}$/.test(email)) {
-        const responseData = validationResponse('Email is invalid');
+    const { error } = loginValidationSchema.validate(req.body);
+    if (error) {
+        const responseData = validationResponse(error.message);
         return res.status(200).json(responseData);
     }
 
@@ -133,11 +123,11 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
     try {
-        if (res.locals.decodedToken) {
+        if (!res.locals.decodedToken) {
             const responseData = successResponse('Logged out Successful.', null);
             return res.status(200).json(responseData);
         }
-        const responseData = errorResponse(401, 'Invalid token');
+        const responseData = errorResponse(500, 'Something went Wrong');
         return res.status(200).json(responseData);
     } catch (error) {
         globalErrorHandler(res, error);

@@ -1,5 +1,5 @@
 import express from 'express';
-import { singleQA, getAllQA } from './controller.js';
+import { singleQA, getQA } from './controller.js';
 import verifyToken from '../middlewares/token.js';
 import authUser from '../middlewares/auth.js';
 
@@ -54,7 +54,7 @@ router.post(
 router.get(
     '/getAllQA',
     verifyToken,
-    getAllQA
+    getQA
     /* 
     #swagger.tags = ['User & Admin']
     #swagger.summary = 'get all questions and answers'

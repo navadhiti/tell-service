@@ -1,9 +1,22 @@
 import QA_Model from './model.js';
+import { QA_ValidationSchema, indexSchema } from '../admins/validation.js';
 import { successResponse, validationResponse } from '../utils/handleServerResponse.js';
 import globalErrorHandler from '../utils/globalErrorHandler.js';
 
 const singleQA = async (req, res) => {
     const { question, answer, department, updatedBy } = req.body;
+
+    const { error } = QA_ValidationSchema.validate({
+        question,
+        answer,
+        department,
+        createdBy: res.locals.decodedToken.payload.name,
+      });
+
+    if (error) {
+      const responseData = validationResponse(error.message);
+      return res.status(400).json(responseData);
+    }
 
     try {
         const newQuestion = new QA_Model({
@@ -13,6 +26,8 @@ const singleQA = async (req, res) => {
             createdBy: res.locals.decodedToken.payload.name,
             updatedBy: updatedBy,
         });
+        console.log(newQuestion.department.length);
+        console.log(newQuestion.department.length > 0);
 
         const data = await newQuestion.save();
 
@@ -23,10 +38,13 @@ const singleQA = async (req, res) => {
     }
 };
 
-const getAllQA = async (req, res) => {
-    const index = parseInt(req.query.index);
-    if (index == undefined || isNaN(index)) {
-        const responseData = validationResponse('index params is required.');
+const getQA = async (req, res) => {
+    const index = req.query.index;
+    
+    const indexError = index === undefined || index === '' ? 'Index parameter is required or Value must be a non-empty.' : null;
+    const { error } = indexSchema.validate(parseInt(index));
+    if (error || indexError) {
+        const responseData = validationResponse(indexError ? indexError: error.message);
         return res.status(200).json(responseData);
     }
 
@@ -49,4 +67,4 @@ const getAllQA = async (req, res) => {
     }
 };
 
-export { singleQA, getAllQA };
+export { singleQA, getQA };

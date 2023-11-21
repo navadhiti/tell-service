@@ -1,9 +1,17 @@
 import mongoose from 'mongoose';
 
-const schema = new mongoose.Schema({
+const nonEmptyStringValidator = {
+    validator: (value) => {
+        return value.trim().length > 0;
+    },
+    message: 'This field must be a non-empty string.',
+};
+
+const UserSchema = new mongoose.Schema({
     fullName: {
         type: String,
         required: true,
+        validate: nonEmptyStringValidator,
     },
     email: {
         type: String,
@@ -18,7 +26,7 @@ const schema = new mongoose.Schema({
     },
     phoneNo: {
         type: String,
-        required: false,
+        required: true,
         validate: {
             validator: function (phoneNo) {
                 return /^\d{10}$/.test(phoneNo);
@@ -30,6 +38,7 @@ const schema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
+        validate: nonEmptyStringValidator,
     },
     isAdmin: {
         type: Boolean,
@@ -37,6 +46,6 @@ const schema = new mongoose.Schema({
     },
 });
 
-const userModel = mongoose.model('user', schema);
+const userModel = mongoose.model('user', UserSchema);
 
 export default userModel;

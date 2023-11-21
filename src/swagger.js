@@ -5,10 +5,10 @@ const userDoc = {
     info: {
         version: '1.0.0',
         title: 'TELL API Documentation',
-        description: 'English learning tool',
+        description: 'Technology Enabled Learning Language',
     },
     host: 'localhost:3000',
-    basePath: '/api/user',
+    basePath: '/api/v1/user',
     schemes: ['http', 'https'],
     securityDefinitions: {
         apiKeyAuth: {
@@ -25,10 +25,10 @@ const adminDoc = {
     info: {
         version: '1.0.0',
         title: 'TELL API Documentation',
-        description: 'English learning tool',
+        description: 'Technology Enabled Learning Language',
     },
     host: 'localhost:3000',
-    basePath: '/api/admin',
+    basePath: '/api/v1/admin',
     schemes: ['http', 'https'],
     securityDefinitions: {
         apiKeyAuth: {
