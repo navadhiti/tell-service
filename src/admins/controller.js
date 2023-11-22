@@ -11,11 +11,11 @@ const singleQA = async (req, res) => {
         answer,
         department,
         createdBy: res.locals.decodedToken.payload.name,
-      });
+    });
 
     if (error) {
-      const responseData = validationResponse(error.message);
-      return res.status(400).json(responseData);
+        const responseData = validationResponse(error.message);
+        return res.status(400).json(responseData);
     }
 
     try {
@@ -26,8 +26,6 @@ const singleQA = async (req, res) => {
             createdBy: res.locals.decodedToken.payload.name,
             updatedBy: updatedBy,
         });
-        console.log(newQuestion.department.length);
-        console.log(newQuestion.department.length > 0);
 
         const data = await newQuestion.save();
 
@@ -40,11 +38,14 @@ const singleQA = async (req, res) => {
 
 const getQA = async (req, res) => {
     const index = req.query.index;
-    
-    const indexError = index === undefined || index === '' ? 'Index parameter is required or Value must be a non-empty.' : null;
+
+    const indexError =
+        index === undefined || index === ''
+            ? 'Index parameter is required or Value must be a non-empty.'
+            : null;
     const { error } = indexSchema.validate(parseInt(index));
     if (error || indexError) {
-        const responseData = validationResponse(indexError ? indexError: error.message);
+        const responseData = validationResponse(indexError ? indexError : error.message);
         return res.status(200).json(responseData);
     }
 

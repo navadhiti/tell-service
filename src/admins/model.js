@@ -7,7 +7,6 @@ const nonEmptyStringValidator = {
     message: 'This field must be a non-empty string.',
 };
 
-
 const schema = new mongoose.Schema({
     question: {
         type: String,
