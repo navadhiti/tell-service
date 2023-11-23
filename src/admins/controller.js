@@ -29,7 +29,7 @@ const singleQA = async (req, res) => {
 
         const data = await newQuestion.save();
 
-        const responseData = successResponse('New Question Added Successfully.', data);
+        const responseData = successResponse('New Question Added Successfully', data);
         return res.status(200).json(responseData);
     } catch (error) {
         globalErrorHandler(res, error);
@@ -41,7 +41,7 @@ const getQA = async (req, res) => {
 
     const indexError =
         index === undefined || index === ''
-            ? 'Index parameter is required or Value must be a non-empty.'
+            ? 'Index parameter is required or Value must be a non-empty'
             : null;
     const { error } = indexSchema.validate(parseInt(index));
     if (error || indexError) {
@@ -56,12 +56,12 @@ const getQA = async (req, res) => {
             const dataObject = data[0].toObject();
             dataObject.totalQuestions = response.length;
             const responseData = successResponse(
-                'Questions & Answers Retrieved Successfully.',
+                'Question & Answer Retrieved Successfully',
                 dataObject
             );
             return res.status(200).json(responseData);
         }
-        const responseData = validationResponse('You have completed your session.');
+        const responseData = validationResponse('You have completed your session');
         return res.status(200).json(responseData);
     } catch (error) {
         globalErrorHandler(res, error);

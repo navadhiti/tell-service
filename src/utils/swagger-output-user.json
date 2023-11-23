@@ -3,7 +3,7 @@
   "info": {
     "version": "1.0.0",
     "title": "TELL API Documentation",
-    "description": "Technology Enabled Learning Language"
+    "description": "Technology Enabled Language Learning"
   },
   "host": "localhost:3000",
   "basePath": "/api/v1/user",
@@ -67,7 +67,7 @@
             "description": "Registered Successfully."
           },
           "400": {
-            "description": "validation Error."
+            "description": "Validaiton Error."
           },
           "409": {
             "description": "Account Already Exists."
@@ -117,7 +117,7 @@
             "description": "Login Successful."
           },
           "400": {
-            "description": "validation Error."
+            "description": "Validaiton Error."
           },
           "401": {
             "description": "Incorrect Email or Password."
@@ -147,6 +147,9 @@
           },
           "401": {
             "description": "Invalid token."
+          },
+          "500": {
+            "description": "Server Error."
           }
         }
       }

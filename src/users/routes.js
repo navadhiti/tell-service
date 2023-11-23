@@ -34,7 +34,7 @@ router.post(
     }
     ...
     else if(...) {
-        // #swagger.responses[400] = { description: 'validation Error.'}
+        // #swagger.responses[400] = { description: 'Validaiton Error.'}
         return res.status(200).send(false);
     }
     ...
@@ -76,7 +76,7 @@ router.post(
     }
     ...
     else if(...) {
-        // #swagger.responses[400] = { description: 'validation Error.' }
+        // #swagger.responses[400] = { description: 'Validaiton Error.' }
         return res.status(200).send(false);
     }
     ...
@@ -111,6 +111,9 @@ router.get(
     ...
     // #swagger.responses[401] = { description: 'Invalid token.' }
     return res.status(200).send(false);
+    ...
+    // #swagger.responses[500] = { description: 'Server Error.' }
+    return res.status(500).send(false);
     
     */
 );

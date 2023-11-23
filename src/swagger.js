@@ -5,7 +5,7 @@ const userDoc = {
     info: {
         version: '1.0.0',
         title: 'TELL API Documentation',
-        description: 'Technology Enabled Learning Language',
+        description: 'Technology Enabled Language Learning',
     },
     host: 'localhost:3000',
     basePath: '/api/v1/user',

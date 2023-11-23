@@ -64,10 +64,10 @@
         ],
         "responses": {
           "200": {
-            "description": "New Question Added to the Database."
+            "description": "New Question Added Successfully."
           },
           "400": {
-            "description": "Bad Request."
+            "description": "Validaiton Error."
           },
           "401": {
             "description": "Invalid Token or Unauthorized Access to the user."
@@ -78,12 +78,12 @@
         }
       }
     },
-    "/getAllQA": {
+    "/getQA": {
       "get": {
         "tags": [
           "User & Admin"
         ],
-        "summary": "get all questions and answers",
+        "summary": "get question and answer",
         "description": "Add Desc Here",
         "produces": [
           "application/json"
@@ -100,13 +100,13 @@
         ],
         "responses": {
           "200": {
-            "description": "Questions & Answers Retrieved Successfully."
+            "description": "Question & Answer Retrieved Successfully."
           },
           "400": {
-            "description": "Bad Request."
+            "description": "Validaiton Error."
           },
           "401": {
-            "description": "Unauthorized Access to the user."
+            "description": "Invalid Token."
           },
           "500": {
             "description": "Server Error."

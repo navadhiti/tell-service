@@ -32,12 +32,12 @@ router.post(
     }
     ...
     if(...) {
-        // #swagger.responses[200] = { description: 'New Question Added to the Database.' }
+        // #swagger.responses[200] = { description: 'New Question Added Successfully.' }
         return res.status(200).send(data);
     }
     ...
     else if(...) {
-        // #swagger.responses[400] = { description: 'Bad Request.'}
+        // #swagger.responses[400] = { description: 'Validaiton Error.'}
         return res.status(200).send(false);
     }
     ...
@@ -52,12 +52,12 @@ router.post(
 );
 
 router.get(
-    '/getAllQA',
+    '/getQA',
     verifyToken,
     getQA
     /* 
     #swagger.tags = ['User & Admin']
-    #swagger.summary = 'get all questions and answers'
+    #swagger.summary = 'get question and answer'
     #swagger.description = 'Add Desc Here'
 
     #swagger.method = 'get'
@@ -73,17 +73,17 @@ router.get(
     }
     ...
     if(...) {
-        // #swagger.responses[200] = { description: 'Questions & Answers Retrieved Successfully.' }
+        // #swagger.responses[200] = { description: 'Question & Answer Retrieved Successfully.' }
         return res.status(200).send(data);
     }
     ...
     else if(...) {
-        // #swagger.responses[400] = { description: 'Bad Request.'}
+        // #swagger.responses[400] = { description: 'Validaiton Error.'}
         return res.status(200).send(false);
     }
     ...
     else if(...) {
-        // #swagger.responses[401] = { description: 'Unauthorized Access to the user.'}
+        // #swagger.responses[401] = { description: 'Invalid Token.'}
         return res.status(200).send(false);
     }
     ...

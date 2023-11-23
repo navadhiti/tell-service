@@ -1,7 +1,7 @@
 {
     "name": "project-tell",
     "version": "1.0.0",
-    "description": "Technology Enabled Learning Language",
+    "description": "Technology Enabled Language Learning",
     "type": "module",
     "engines": {
         "node": "18.18.2",

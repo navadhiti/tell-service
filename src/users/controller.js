@@ -24,7 +24,7 @@ const register = async (req, res) => {
         const user = await userModel.findOne({ email: email });
 
         if (user) {
-            const responseData = errorResponse(409, 'Account Already Exists.');
+            const responseData = errorResponse(409, 'Account Already Exists');
             return res.status(200).json(responseData);
         } else {
             const hashedPassword = await handlePasswordEncrypt(password);
@@ -57,7 +57,7 @@ const register = async (req, res) => {
             data.password = password;
             data.token = jwtEncryptedToken;
 
-            const responseData = successResponse('Register Successful', data);
+            const responseData = successResponse('Registered Successfully', data);
             return res.status(200).json(responseData);
         }
     } catch (error) {
@@ -80,7 +80,7 @@ const login = async (req, res) => {
         if (!user) {
             const responseData = errorResponse(
                 404,
-                'Account Not Exists. Please SignUp before Login'
+                'Account Not Exists'
             );
             return res.status(200).json(responseData);
         } else {
@@ -124,11 +124,12 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
     try {
         if (!res.locals.decodedToken) {
-            const responseData = successResponse('Logged out Successful.', null);
+            const responseData = successResponse('Logged out Successful', null);
             return res.status(200).json(responseData);
+        } else {
+            const responseData = errorResponse(500, 'Something went Wrong');
+            return res.status(500).json(responseData);
         }
-        const responseData = errorResponse(500, 'Something went Wrong');
-        return res.status(200).json(responseData);
     } catch (error) {
         globalErrorHandler(res, error);
     }
