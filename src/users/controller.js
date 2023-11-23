@@ -78,10 +78,7 @@ const login = async (req, res) => {
         const user = await userModel.findOne({ email: email });
 
         if (!user) {
-            const responseData = errorResponse(
-                404,
-                'Account Not Exists'
-            );
+            const responseData = errorResponse(404, 'Account Not Exists');
             return res.status(200).json(responseData);
         } else {
             const passwordMatchResult = bcrypt.compareSync(password, user.password);
