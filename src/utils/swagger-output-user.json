@@ -50,7 +50,7 @@
                   "type": "string",
                   "example": "sethu@gmail.com"
                 },
-                "phoneNo": {
+                "phoneNumber": {
                   "type": "string",
                   "example": "9876543210"
                 },
@@ -83,7 +83,7 @@
         "tags": [
           "User"
         ],
-        "summary": "user login with their credentials.",
+        "summary": "user login with their credentials",
         "description": "Add Desc Here",
         "consumes": [
           "application/json"
@@ -131,12 +131,80 @@
         }
       }
     },
+    "/markResult": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "overall mark for the level",
+        "description": "Add Desc Here",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "User Req.Body Data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "QA_ID": {
+                  "type": "string",
+                  "example": "6555c642fe134b47d29f820f"
+                },
+                "questionResult": {
+                  "type": "string",
+                  "example": "how are you feeling right now"
+                },
+                "answerResult": {
+                  "type": "string",
+                  "example": "I am feeling fine thank you"
+                },
+                "questionMark": {
+                  "type": "string",
+                  "example": "100"
+                },
+                "answerMark": {
+                  "type": "string",
+                  "example": "100"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result Submitted Successfully or Level Completed."
+          },
+          "400": {
+            "description": "Validaiton Error."
+          },
+          "401": {
+            "description": "Invalid token."
+          },
+          "404": {
+            "description": "Question Not Found."
+          },
+          "409": {
+            "description": "Result Already Submitted."
+          },
+          "500": {
+            "description": "Server Error."
+          }
+        }
+      }
+    },
     "/logout": {
       "get": {
         "tags": [
           "User & Admin"
         ],
-        "summary": "Logs out current logged in user session.",
+        "summary": "Logs out current logged in user session",
         "description": "Add Desc Here",
         "produces": [
           "application/json"
