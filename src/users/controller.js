@@ -76,7 +76,7 @@ const login = async (req, res) => {
 
     const { error } = loginValidationSchema.validate(req.body);
     if (error) {
-        const responseData = validationResponse(error.message);
+        const responseData = validationResponse('Invalid Email or Password');
         return res.status(200).json(responseData);
     }
 
