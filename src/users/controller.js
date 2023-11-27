@@ -41,6 +41,7 @@ const register = async (req, res) => {
                 phoneNumber: phoneNumber,
                 password: hashedPassword,
             });
+
             const response = await newEmployee.save();
 
             const jwtSigninKey = new TextEncoder().encode(JWT_SIGNIN_PRIVATE_KEY);

@@ -23,6 +23,10 @@ const UserSchema = new mongoose.Schema({
             message: 'Invalid Email',
         },
     },
+    department: {
+        type: [String],
+        default: [],
+    },
     phoneNumber: {
         type: String,
         required: true,

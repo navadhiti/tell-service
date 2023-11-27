@@ -19,9 +19,30 @@ const schema = new mongoose.Schema({
         validate: nonEmptyStringValidator,
     },
     department: {
-        type: String,
+        type: [
+            {
+                type: String,
+                required: true,
+                validate: nonEmptyStringValidator,
+            },
+        ],
         required: true,
-        validate: nonEmptyStringValidator,
+        validate: {
+            validator: function (department) {
+                return department.length > 0;
+            },
+            message: 'Department must be a non-empty array',
+        },
+    },
+    level: {
+        type: Number,
+        required: true,
+        validate: {
+            validator: function (level) {
+                return typeof level === 'number' && level > 0 && level % 1 === 0;
+            },
+            message: 'Level must be a positive integer greater than 1',
+        },
     },
     createdBy: {
         type: String,

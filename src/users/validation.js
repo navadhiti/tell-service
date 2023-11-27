@@ -24,6 +24,19 @@ const fullName = Joi.string().trim().required().empty().messages({
     'any.required': 'Full Name field is required',
     'string.empty': 'Full Name field is must be a non-empty',
 });
+const department = Joi.array()
+    .items(
+        Joi.string().trim().required().empty().messages({
+            'any.required': 'Department Name field is required',
+            'string.empty': 'Department Name must be a non-empty string',
+        })
+    )
+    .optional()
+    .empty()
+    .messages({
+        'array.base': 'Department must be an array',
+        'array.empty': 'Department must be a non-empty array',
+    });
 const phoneNumber = Joi.string()
     .trim()
     .pattern(/^\d{10}$/)
@@ -45,7 +58,6 @@ const QA_ID = Joi.string()
         'any.required': 'QA ID field is required',
         'string.empty': 'QA ID is must be a non-empty',
     });
-
 const questionResult = Joi.string().trim().required().empty().messages({
     'any.required': 'Question Result field is required',
     'string.empty': 'Question Result is must be a non-empty',
@@ -67,6 +79,7 @@ const registerValidationSchema = Joi.object({
     fullName: fullName,
     email: email,
     password: password,
+    department: department,
     phoneNumber: phoneNumber,
 });
 

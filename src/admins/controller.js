@@ -1,18 +1,18 @@
 import QA_Model from './model.js';
-import { QA_ValidationSchema, indexSchema } from '../admins/validation.js';
+import { QA_PostValidationSchema, QA_GetValidationSchema } from '../admins/validation.js';
 import { successResponse, validationResponse } from '../utils/handleServerResponse.js';
 import globalErrorHandler from '../utils/globalErrorHandler.js';
 
 const singleQA = async (req, res) => {
-    const { question, answer, department, updatedBy } = req.body;
+    const { question, answer, department, level, updatedBy } = req.body;
 
-    const { error } = QA_ValidationSchema.validate({
+    const { error } = QA_PostValidationSchema.validate({
         question,
         answer,
         department,
+        level,
         createdBy: res.locals.decodedToken.payload.name,
     });
-
     if (error) {
         const responseData = validationResponse(error.message);
         return res.status(400).json(responseData);
@@ -23,6 +23,7 @@ const singleQA = async (req, res) => {
             question: question,
             answer: answer,
             department: department,
+            level: level,
             createdBy: res.locals.decodedToken.payload.name,
             updatedBy: updatedBy,
         });
@@ -37,21 +38,27 @@ const singleQA = async (req, res) => {
 };
 
 const getQA = async (req, res) => {
-    const index = req.query.index;
+    const { index, level, department } = req.query;
 
-    const indexError =
-        index === undefined || index === ''
-            ? 'Index parameter is required or Value must be a non-empty'
-            : null;
-    const { error } = indexSchema.validate(parseInt(index));
-    if (error || indexError) {
-        const responseData = validationResponse(indexError ? indexError : error.message);
+    if (department === undefined || department === '') {
+        const responseData = validationResponse('department parameter is required');
+        return res.status(200).json(responseData);
+    }
+    const departmentArray = JSON.parse(department.replace(/'/g, ''));
+    const { error } = QA_GetValidationSchema.validate({ index, level, departmentArray });
+    if (error) {
+        const responseData = validationResponse(error.message);
         return res.status(200).json(responseData);
     }
 
     try {
-        const response = await QA_Model.find();
-        if (response.length >= index && index !== 0) {
+        const response = await QA_Model.find({
+            level: level,
+            department: { $in: departmentArray },
+        });
+
+        if (response.length >= index) {
+            //&& index !== 0
             const data = response.slice(index - 1, index);
             const dataObject = data[0].toObject();
             dataObject.totalQuestions = response.length;
