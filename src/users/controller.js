@@ -4,7 +4,7 @@ import { JWT_SIGNIN_PRIVATE_KEY, JWT_ENCRYPTION_PRIVATE_KEY } from '../config.js
 import * as jose from 'jose';
 import mongoose from 'mongoose';
 import { userModel, QA_ResultModel } from './model.js';
-import QA_Model from '../admins/model.js';
+import { QA_Model } from '../admins/model.js';
 import {
     registerValidationSchema,
     loginValidationSchema,

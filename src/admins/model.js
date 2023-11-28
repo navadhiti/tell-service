@@ -7,7 +7,26 @@ const nonEmptyStringValidator = {
     message: 'This field must be a non-empty string.',
 };
 
-const schema = new mongoose.Schema({
+const departmentSchema = new mongoose.Schema({
+    department: {
+        type: [
+            {
+                type: String,
+                required: true,
+                validate: nonEmptyStringValidator,
+            },
+        ],
+        required: true,
+        validate: {
+            validator: function (department) {
+                return department.length > 0;
+            },
+            message: 'Department must be a non-empty array',
+        },
+    },
+});
+
+const QA_Schema = new mongoose.Schema({
     question: {
         type: String,
         required: true,
@@ -55,6 +74,7 @@ const schema = new mongoose.Schema({
     },
 });
 
-const QA_Model = mongoose.model('questions&answer', schema);
+const DepartmentModel = mongoose.model('department', departmentSchema);
+const QA_Model = mongoose.model('questions&answer', QA_Schema);
 
-export default QA_Model;
+export { DepartmentModel, QA_Model };

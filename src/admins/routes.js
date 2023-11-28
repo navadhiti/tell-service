@@ -1,5 +1,11 @@
 import express from 'express';
-import { singleQA, getQA } from './controller.js';
+import {
+    singleQA,
+    getQA,
+    postDepartment,
+    getDepartment,
+    updateUserDepartment,
+} from './controller.js';
 import verifyToken from '../middlewares/token.js';
 import authUser from '../middlewares/auth.js';
 
@@ -91,5 +97,9 @@ router.get(
         return res.status(500).send(false);
     */
 );
+
+router.post('/postDepartment', verifyToken, authUser, postDepartment);
+router.get('/getDepartment', verifyToken, getDepartment);
+router.put('/updateUserDepartment', verifyToken, updateUserDepartment);
 
 export default router;

@@ -16,6 +16,7 @@ const department = Joi.array()
     )
     .required()
     .messages({
+        'any.required': 'Department field is required',
         'array.base': 'Department must be an array',
         'array.empty': 'Department must be a non-empty array',
     });
@@ -46,7 +47,10 @@ const QA_PostValidationSchema = Joi.object({
 const QA_GetValidationSchema = Joi.object({
     index: index,
     level: level,
-    departmentArray: department,
 });
 
-export { QA_PostValidationSchema, QA_GetValidationSchema };
+const updateDepartmentSchema = Joi.object({
+    department: department,
+});
+
+export { QA_PostValidationSchema, QA_GetValidationSchema, updateDepartmentSchema };
