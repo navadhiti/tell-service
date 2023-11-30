@@ -2,9 +2,9 @@ import handlePasswordEncrypt from '../utils/handlePasswordEncrypt.js';
 import bcrypt from 'bcryptjs';
 import { JWT_SIGNIN_PRIVATE_KEY, JWT_ENCRYPTION_PRIVATE_KEY } from '../config.js';
 import * as jose from 'jose';
-import mongoose from 'mongoose';
 import { userModel, QA_ResultModel } from './model.js';
 import { QA_Model } from '../admins/model.js';
+
 import {
     registerValidationSchema,
     loginValidationSchema,
@@ -126,9 +126,27 @@ const login = async (req, res) => {
 };
 
 const markResult = async (req, res) => {
-    const dataFromRequest = req.body;
+    const {
+        QA_ID,
+        questionResult,
+        answerResult,
+        questionMark,
+        answerMark,
+        level,
+        timeTakenForQuestion,
+        timeTakenForAnswer,
+    } = req.body;
 
-    const { error } = markResutValidationSchema.validate(req.body);
+    const { error } = markResutValidationSchema.validate({
+        QA_ID,
+        questionResult,
+        answerResult,
+        questionMark,
+        answerMark,
+        level,
+        timeTakenForQuestion,
+        timeTakenForAnswer,
+    });
     if (error) {
         const responseData = validationResponse(error.message);
         return res.status(200).json(responseData);
@@ -138,53 +156,77 @@ const markResult = async (req, res) => {
         const email = res.locals.decodedToken.payload.email;
         const user = await userModel.findOne({ email: email });
 
-        const question = await QA_Model.find();
-        const dataFromRequestObjectId = new mongoose.Types.ObjectId(dataFromRequest.QA_ID);
-        const questionAvailable = await QA_Model.find({ _id: dataFromRequestObjectId });
-        const index = question.findIndex((data) => data._id.equals(dataFromRequestObjectId));
-        const result = await QA_ResultModel.findOne({
-            QA_ID: dataFromRequestObjectId,
-            User_ID: user._id,
+        const userResult = await QA_ResultModel.findOne({ user_ID: user._id });
+
+        const questions = await QA_Model.find({
+            level: level,
+            department: { $in: user.department },
         });
 
-        if (questionAvailable.length === 0) {
-            const responseData = errorResponse(404, 'Question Not Found');
-            return res.status(200).json(responseData);
-        } else if (!result && questionAvailable.length !== 0) {
-            dataFromRequest.User_ID = user._id;
-            const newResult = new QA_ResultModel(dataFromRequest);
-            const response = await newResult.save();
+        const questionAvailable = questions.some((question) => question._id === QA_ID);
 
-            if (!(question.length == index + 1)) {
-                const responseData = successResponse('Result Submitted Successfully', response);
-                return res.status(200).json(responseData);
-            }
-        } else {
-            const responseData = errorResponse(409, 'Result Already Submitted');
+        if (!questionAvailable) {
+            const responseData = errorResponse(400, 'Question Not Found');
             return res.status(200).json(responseData);
+        } else if (userResult === null) {
+            const newResult = new QA_ResultModel({
+                user_ID: user._id,
+                attempt: [[req.body]],
+            });
+            const data = await newResult.save();
+
+            const responseData = successResponse('Result Submitted Successfully', data);
+            return res.status(200).json(responseData);
+        } else {
+            let isResultPresent = false;
+
+            for (let i = 0; i < userResult.attempt.length; i++) {
+                const indexToUpdate = userResult.attempt[i].findIndex(
+                    (item) => item.QA_ID === QA_ID
+                );
+
+                if (indexToUpdate === -1 && i === userResult.attempt.length - 1) {
+                    userResult.attempt[i].push(req.body);
+                    isResultPresent = true;
+                    break;
+                }
+            }
+            if (!isResultPresent) {
+                const newIndex = userResult.attempt.length;
+                userResult.attempt[newIndex] = [req.body];
+            }
         }
 
-        if (question.length == index + 1) {
-            const userResult = await QA_ResultModel.find({ User_ID: user._id });
+        const data = await userResult.save();
 
-            let sum = 0;
-            userResult.map((data) => {
-                sum = sum + (parseInt(data.questionMark) + parseInt(data.answerMark));
+        const updatedUserResult = await QA_ResultModel.findOne({ user_ID: user._id });
+
+        const attemptArrayLength = updatedUserResult.attempt.length;
+        const isLengthEqual =
+            updatedUserResult.attempt[attemptArrayLength - 1].length === questions.length;
+
+        if (isLengthEqual) {
+            let mark = 0;
+            let speed = 0;
+            updatedUserResult.attempt[attemptArrayLength - 1].map(async (data) => {
+                mark = mark + data.questionMark + data.answerMark;
+                speed = speed + data.timeTakenForQuestion + data.timeTakenForAnswer;
             });
-            const mark = Math.floor(sum / (userResult.length * 2));
 
-            if (mark < 50) {
-                userResult.map(async (data) => {
-                    await QA_ResultModel.deleteOne({ _id: data._id });
-                });
-            }
+            const finalMark = Math.floor(
+                mark / (updatedUserResult.attempt[attemptArrayLength - 1].length * 2)
+            );
 
             const data = {
                 userName: user.fullName,
-                mark: mark,
-                level: userResult[0].level,
+                level: 'level 1',
+                mark: finalMark,
+                speed: speed,
             };
             const responseData = successResponse('Level Completed', data);
+            return res.status(200).json(responseData);
+        } else {
+            const responseData = successResponse('Result Submitted Successfully', data);
             return res.status(200).json(responseData);
         }
     } catch (error) {

@@ -66,13 +66,36 @@ const answerResult = Joi.string().trim().required().empty().messages({
     'any.required': 'Answer Result field is required',
     'string.empty': 'Answer Result is must be a non-empty',
 });
-const questionMark = Joi.string().trim().required().empty().messages({
-    'any.required': 'Question Mark field is required',
-    'string.empty': 'Question Mark is must be a non-empty',
+
+const questionMark = Joi.number().integer().min(0).required().messages({
+    'number.base': 'Question Mark must be a number',
+    'number.integer': 'Question Mark must be an integer',
+    'number.min': 'Question Mark must be greater than or equal to 0',
+    'any.required': 'Question Mark parameter is required',
 });
-const answerMark = Joi.string().trim().required().empty().messages({
-    'any.required': 'Answer Mark field is required',
-    'string.empty': 'Answer Mark is must be a non-empty',
+const answerMark = Joi.number().integer().min(0).required().messages({
+    'number.base': 'Answer Mark must be a number',
+    'number.integer': 'Answer Mark must be an integer',
+    'number.min': 'Answer Mark must be greater than or equal to 0',
+    'any.required': 'Answer Mark parameter is required',
+});
+const level = Joi.number().integer().min(1).required().messages({
+    'number.base': 'Level must be a number',
+    'number.integer': 'Level must be an integer',
+    'number.min': 'Level must be greater than or equal to 1',
+    'any.required': 'Level parameter is required',
+});
+const timeTakenForQuestion = Joi.number().integer().min(0).required().messages({
+    'number.base': 'Time Taken for Question must be a number',
+    'number.integer': 'Time Taken for Question must be an integer',
+    'number.min': 'Time Taken for Question must be greater than or equal to 0',
+    'any.required': 'Time Taken for Question parameter is required',
+});
+const timeTakenForAnswer = Joi.number().integer().min(0).required().messages({
+    'number.base': 'Time Taken for Answer must be a number',
+    'number.integer': 'Time Taken for Answer must be an integer',
+    'number.min': 'Time Taken for Answer must be greater than or equal to 0',
+    'any.required': 'Time Taken for Answer parameter is required',
 });
 
 const registerValidationSchema = Joi.object({
@@ -94,6 +117,9 @@ const markResutValidationSchema = Joi.object({
     answerResult: answerResult,
     questionMark: questionMark,
     answerMark: answerMark,
+    level: level,
+    timeTakenForQuestion: timeTakenForQuestion,
+    timeTakenForAnswer: timeTakenForAnswer,
 });
 
 export { registerValidationSchema, loginValidationSchema, markResutValidationSchema };

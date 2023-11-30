@@ -1,13 +1,3 @@
-/*
- * Run the project and access the documentation at: http://localhost:3000/user/doc & http://localhost:3000/admin/doc
- *
- * Use the command below to generate the documentation without starting the project:
- * $ npm run start
- *
- * Use the command below to generate the documentation at project startup:
- * $ npm run swagger
- */
-
 import express from 'express';
 import cors from 'cors';
 import doDBConnect from './doDBConnect.js';

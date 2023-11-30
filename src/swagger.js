@@ -7,8 +7,6 @@ const userDoc = {
         title: 'TELL API Documentation',
         description: 'Technology Enabled Language Learning',
     },
-    host: 'localhost:3000',
-    basePath: '/api/v1/user',
     schemes: ['http', 'https'],
     securityDefinitions: {
         apiKeyAuth: {
@@ -27,8 +25,6 @@ const adminDoc = {
         title: 'TELL API Documentation',
         description: 'Technology Enabled Learning Language',
     },
-    host: 'localhost:3000',
-    basePath: '/api/v1/admin',
     schemes: ['http', 'https'],
     securityDefinitions: {
         apiKeyAuth: {

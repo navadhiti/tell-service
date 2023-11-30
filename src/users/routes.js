@@ -18,7 +18,7 @@ router.post(
 
     #swagger.parameters['body'] = {
         in: 'body',
-        description: 'User Req.Body Data',
+        description: 'Register Req.Body Data',
         required: true,
         schema: {
             fullName: "Sethu K",
@@ -62,10 +62,10 @@ router.post(
 
     #swagger.parameters['body'] = {
         in: 'body',
-        description: 'User Req.Body Data',
+        description: 'Login Req.Body Data',
         required: true,
         schema: {
-            email: "palani@gmail.com",
+            email: "sethu@gmail.com",
             password: "zxcASD123@!$"
         }
     }
@@ -101,7 +101,7 @@ router.post(
     markResult
     /* 
     #swagger.tags = ['User']
-    #swagger.summary = 'overall mark for the level'
+    #swagger.summary = 'overall mark & speed for the level'
     #swagger.description = 'Add Desc Here'
 
     #swagger.method = 'post'
@@ -110,14 +110,17 @@ router.post(
 
     #swagger.parameters['body'] = {
         in: 'body',
-        description: 'User Req.Body Data',
+        description: 'Result Req.Body Data',
         required: true,
         schema: {
             QA_ID: "6555c642fe134b47d29f820f",
             questionResult: "how are you feeling right now",
             answerResult: "I am feeling fine thank you",
-            questionMark: "100",
-            answerMark: "100"
+            questionMark: 80,
+            answerMark: 70,
+            level: 1,
+            timeTakenForQuestion: 5,
+            timeTakenForAnswer: 3
         }
     }
     ...
@@ -141,11 +144,6 @@ router.post(
         return res.status(200).send(false);
     }
     ...
-    else if(...) {
-        // #swagger.responses[409] = { description: 'Result Already Submitted.' }
-        return res.status(200).send(false);
-    }
-    ...
     // #swagger.responses[500] = { description: 'Server Error.' }
     return res.status(500).send(false);
     
@@ -159,6 +157,8 @@ router.get(
     #swagger.tags = ['User & Admin']
     #swagger.summary = 'Logs out current logged in user session'
     #swagger.description = 'Add Desc Here'
+
+    #swagger.method = 'get'
     #swagger.produces = ['application/json']
     ...
     // #swagger.responses[200] = { description: 'Logged out Successful.' }

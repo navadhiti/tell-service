@@ -5,7 +5,11 @@ import {
     QA_GetValidationSchema,
     updateDepartmentSchema,
 } from '../admins/validation.js';
-import { successResponse, validationResponse } from '../utils/handleServerResponse.js';
+import {
+    errorResponse,
+    successResponse,
+    validationResponse,
+} from '../utils/handleServerResponse.js';
 import globalErrorHandler from '../utils/globalErrorHandler.js';
 
 const singleQA = async (req, res) => {
@@ -54,6 +58,11 @@ const getQA = async (req, res) => {
 
     const user = await userModel.findOne({ email: res.locals.decodedToken.payload.email });
 
+    if (user.department.length === 0) {
+        const responseData = errorResponse(400, 'Please Select the Department');
+        return res.status(200).json(responseData);
+    }
+
     try {
         const response = await QA_Model.find({
             level: level,
@@ -89,13 +98,10 @@ const postDepartment = async (req, res) => {
             });
 
             const data = await newDepartment.save();
-            const responseData = successResponse(
-                'New Department Array Created & Values Added Successfully',
-                data
-            );
+            const responseData = successResponse('New Department Added Successfully', data);
             return res.status(200).json(responseData);
         } else {
-            department.map(async (dep) => {
+            const promises = department.map(async (dep) => {
                 const existingDepartment = await DepartmentModel.findOne({
                     department: { $in: [dep] },
                 });
@@ -103,9 +109,10 @@ const postDepartment = async (req, res) => {
                     await DepartmentModel.updateOne({ $push: { department: dep } });
                 }
             });
+            await Promise.all(promises);
             const responseData = successResponse(
-                'New Department Added Successfully in Existing Department Property',
-                await DepartmentModel.find({ department })
+                'New Department Added Successfully',
+                await DepartmentModel.find()
             );
             return res.status(200).json(responseData);
         }
@@ -137,25 +144,30 @@ const updateUserDepartment = async (req, res) => {
     }
 
     const user = await userModel.findOne({ email: res.locals.decodedToken.payload.email });
-    const updatePromises = department.map(async (dep) => {
-        const existingDepartment = await userModel.findOne({
-            _id: user._id,
-            department: { $in: [dep] },
-        });
-        if (!existingDepartment) {
-            await user.updateOne({ $push: { department: dep } });
-        }
-    });
-    await Promise.all(updatePromises);
+
+    await user.updateOne({ $set: { department: department } });
 
     const updatedUserDetails = await userModel.findOne({
         email: res.locals.decodedToken.payload.email,
     });
     const responseData = successResponse(
-        'New Department Added Successfully in Existing User Department Property',
+        'New Department Selected Successfully',
         updatedUserDetails.department
     );
     return res.status(200).json(responseData);
 };
 
-export { singleQA, getQA, postDepartment, getDepartment, updateUserDepartment };
+const getUserDepartment = async (req, res) => {
+    try {
+        const data = await userModel.find({ email: res.locals.decodedToken.payload.email });
+        const responseData = successResponse(
+            'All Departments Retrieved Successfully',
+            data[0].department
+        );
+        return res.status(200).json(responseData);
+    } catch (error) {
+        globalErrorHandler(res, error);
+    }
+};
+
+export { singleQA, getQA, postDepartment, getDepartment, updateUserDepartment, getUserDepartment };

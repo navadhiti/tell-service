@@ -11,11 +11,13 @@ const UserSchema = new mongoose.Schema({
     fullName: {
         type: String,
         required: true,
+        trim: true,
         validate: nonEmptyStringValidator,
     },
     email: {
         type: String,
         required: true,
+        trim: true,
         validate: {
             validator: function (email) {
                 return /^[a-z0-9]+(?:\.[a-z0-9]+)?@[a-z]+\.[a-z]{3}$/.test(email);
@@ -30,6 +32,7 @@ const UserSchema = new mongoose.Schema({
     phoneNumber: {
         type: String,
         required: true,
+        trim: true,
         validate: {
             validator: function (phoneNumber) {
                 return /^\d{10}$/.test(phoneNumber);
@@ -40,6 +43,7 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
+        trim: true,
         validate: nonEmptyStringValidator,
     },
     isAdmin: {
@@ -49,48 +53,56 @@ const UserSchema = new mongoose.Schema({
 });
 
 const QA_ResultSchema = new mongoose.Schema({
-    User_ID: {
+    user_ID: {
         type: String,
         required: true,
+        trim: true,
         validate: nonEmptyStringValidator,
     },
-    QA_ID: {
-        type: String,
-        required: true,
-        validate: nonEmptyStringValidator,
-    },
-    questionResult: {
-        type: String,
-        required: true,
-        validate: nonEmptyStringValidator,
-    },
-    answerResult: {
-        type: String,
-        required: true,
-        validate: nonEmptyStringValidator,
-    },
-    questionMark: {
-        type: String,
-        required: true,
-        validate: nonEmptyStringValidator,
-    },
-    answerMark: {
-        type: String,
-        required: true,
-        validate: nonEmptyStringValidator,
-    },
-    level: {
-        type: String,
-        default: '1',
-    },
-    isCompleted: {
-        type: Boolean,
-        default: false,
-    },
-    time: {
-        type: Date,
-        default: Date.now,
-    },
+    attempt: [
+        [
+            {
+                QA_ID: {
+                    type: String,
+                    required: true,
+                    trim: true,
+                    validate: nonEmptyStringValidator,
+                },
+                questionResult: {
+                    type: String,
+                    required: true,
+                    trim: true,
+                    validate: nonEmptyStringValidator,
+                },
+                answerResult: {
+                    type: String,
+                    required: true,
+                    trim: true,
+                    validate: nonEmptyStringValidator,
+                },
+                questionMark: {
+                    type: Number,
+                    required: true,
+                },
+                answerMark: {
+                    type: Number,
+                    required: true,
+                },
+                level: {
+                    type: Number,
+                    required: true,
+                },
+                timeTakenForQuestion: {
+                    type: Number,
+                    required: true,
+                },
+                timeTakenForAnswer: {
+                    type: Number,
+                    required: true,
+                },
+            },
+        ],
+    ],
 });
 
 const userModel = mongoose.model('user', UserSchema);

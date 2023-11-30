@@ -8,7 +8,6 @@ const handlePasswordEncrypt = async (password) => {
                 if (error) {
                     return reject(error);
                 }
-
                 bcrypt.hash(password, salt, (error, hashedPassword) => {
                     if (error) {
                         return reject(error);

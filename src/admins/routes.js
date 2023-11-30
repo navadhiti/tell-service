@@ -5,6 +5,7 @@ import {
     postDepartment,
     getDepartment,
     updateUserDepartment,
+    getUserDepartment,
 } from './controller.js';
 import verifyToken from '../middlewares/token.js';
 import authUser from '../middlewares/auth.js';
@@ -27,13 +28,14 @@ router.post(
     
     #swagger.parameters['body'] = {
         in: 'body',
-        description: 'Admin Req.Body Data',
+        description: 'QA Req.Body Data',
         required: true,
         schema: {
             question: "Let me explain how this treatment works",
             answer: "Please go ahead and explain how the treatment works In did like to know more",
-            department: "All",
-            createdBy: "Palani S"
+            department: ["Cardiology"],
+            level: 1,
+            createdBy: "Sethu K"
         }
     }
     ...
@@ -101,5 +103,6 @@ router.get(
 router.post('/postDepartment', verifyToken, authUser, postDepartment);
 router.get('/getDepartment', verifyToken, getDepartment);
 router.put('/updateUserDepartment', verifyToken, updateUserDepartment);
+router.get('/getUserDepartment', verifyToken, getUserDepartment);
 
 export default router;
