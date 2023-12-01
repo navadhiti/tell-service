@@ -155,7 +155,6 @@ const markResult = async (req, res) => {
     try {
         const email = res.locals.decodedToken.payload.email;
         const user = await userModel.findOne({ email: email });
-
         const userResult = await QA_ResultModel.findOne({ user_ID: user._id });
 
         const questions = await QA_Model.find({
@@ -163,12 +162,7 @@ const markResult = async (req, res) => {
             department: { $in: user.department },
         });
 
-        const questionAvailable = questions.some((question) => question._id === QA_ID);
-
-        if (!questionAvailable) {
-            const responseData = errorResponse(400, 'Question Not Found');
-            return res.status(200).json(responseData);
-        } else if (userResult === null) {
+        if (userResult === null) {
             const newResult = new QA_ResultModel({
                 user_ID: user._id,
                 attempt: [[req.body]],
