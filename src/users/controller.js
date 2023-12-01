@@ -156,7 +156,6 @@ const markResult = async (req, res) => {
         const email = res.locals.decodedToken.payload.email;
         const user = await userModel.findOne({ email: email });
         const userResult = await QA_ResultModel.findOne({ user_ID: user._id });
-
         const questions = await QA_Model.find({
             level: level,
             department: { $in: user.department },
@@ -178,7 +177,6 @@ const markResult = async (req, res) => {
                 const indexToUpdate = userResult.attempt[i].findIndex(
                     (item) => item.QA_ID === QA_ID
                 );
-
                 if (indexToUpdate === -1 && i === userResult.attempt.length - 1) {
                     userResult.attempt[i].push(req.body);
                     isResultPresent = true;
@@ -192,10 +190,9 @@ const markResult = async (req, res) => {
         }
 
         const data = await userResult.save();
-
         const updatedUserResult = await QA_ResultModel.findOne({ user_ID: user._id });
-
         const attemptArrayLength = updatedUserResult.attempt.length;
+
         const isLengthEqual =
             updatedUserResult.attempt[attemptArrayLength - 1].length === questions.length;
 
@@ -204,18 +201,36 @@ const markResult = async (req, res) => {
             let speed = 0;
             updatedUserResult.attempt[attemptArrayLength - 1].map(async (data) => {
                 mark = mark + data.questionMark + data.answerMark;
-                speed = speed + data.timeTakenForQuestion + data.timeTakenForAnswer;
+                speed =
+                    speed +
+                    ((data.questionResult.split(' ').length / data.timeTakenForQuestion) * 60 +
+                        (data.questionResult.split(' ').length / data.timeTakenForAnswer) * 60) /
+                        2;
             });
 
             const finalMark = Math.floor(
                 mark / (updatedUserResult.attempt[attemptArrayLength - 1].length * 2)
             );
 
+            const totalSpeed = Math.floor(
+                speed / updatedUserResult.attempt[attemptArrayLength - 1].length
+            );
+
+            let finalSpeed;
+
+            if (totalSpeed < 100) {
+                finalSpeed = 'Slow';
+            } else if (totalSpeed >= 100 && totalSpeed <= 140) {
+                finalSpeed = 'Medium';
+            } else {
+                finalSpeed = 'Fast';
+            }
+
             const data = {
                 userName: user.fullName,
                 level: 'level 1',
                 mark: finalMark,
-                speed: speed,
+                speed: finalSpeed,
             };
             const responseData = successResponse('Level Completed', data);
             return res.status(200).json(responseData);
