@@ -1,0 +1,200 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "TELL API Documentation",
+    "description": "Technology Enabled Learning Language"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "securityDefinitions": {
+    "apiKeyAuth": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "x-auth-token",
+      "description": "Authentication token"
+    }
+  },
+  "paths": {
+    "/singleQA": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "upload single question and answer",
+        "description": "Add Desc Here",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "QA Req.Body Data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "question": {
+                  "type": "string",
+                  "example": "Let me explain how this treatment works"
+                },
+                "answer": {
+                  "type": "string",
+                  "example": "Please go ahead and explain how the treatment works In did like to know more"
+                },
+                "department": {
+                  "type": "array",
+                  "example": [
+                    "Cardiology"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "level": {
+                  "type": "number",
+                  "example": 1
+                },
+                "createdBy": {
+                  "type": "string",
+                  "example": "Sethu K"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "New Question Added Successfully."
+          },
+          "400": {
+            "description": "Validaiton Error."
+          },
+          "401": {
+            "description": "Invalid Token or Unauthorized Access to the user."
+          },
+          "500": {
+            "description": "Server Error."
+          }
+        }
+      }
+    },
+    "/getQA": {
+      "get": {
+        "tags": [
+          "User & Admin"
+        ],
+        "summary": "get question and answer",
+        "description": "Add Desc Here",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "index",
+            "in": "query",
+            "description": "The index of the question is retrieve.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Question & Answer Retrieved Successfully."
+          },
+          "400": {
+            "description": "Validaiton Error."
+          },
+          "401": {
+            "description": "Invalid Token."
+          },
+          "500": {
+            "description": "Server Error."
+          }
+        }
+      }
+    },
+    "/postDepartment": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "department": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/getDepartment": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/updateUserDepartment": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "department": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/getUserDepartment": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ]
+}
