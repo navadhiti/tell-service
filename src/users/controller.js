@@ -199,22 +199,21 @@ const markResult = async (req, res) => {
         if (isLengthEqual) {
             let mark = 0;
             let speed = 0;
+            let seconds = 0;
             updatedUserResult.attempt[attemptArrayLength - 1].map(async (data) => {
                 mark = mark + data.questionMark + data.answerMark;
                 speed =
                     speed +
                     ((data.questionResult.split(' ').length / data.timeTakenForQuestion) * 60 +
-                        (data.questionResult.split(' ').length / data.timeTakenForAnswer) * 60) /
-                        2;
+                        (data.questionResult.split(' ').length / data.timeTakenForAnswer) * 60);
+                seconds = seconds + data.timeTakenForQuestion + data.timeTakenForAnswer;
             });
 
             const finalMark = Math.floor(
                 mark / (updatedUserResult.attempt[attemptArrayLength - 1].length * 2)
             );
 
-            const totalSpeed = Math.floor(
-                speed / updatedUserResult.attempt[attemptArrayLength - 1].length
-            );
+            const totalSpeed = Math.floor((speed / seconds) * 60);
 
             let finalSpeed;
 
