@@ -156,6 +156,7 @@ const markResult = async (req, res) => {
         const email = res.locals.decodedToken.payload.email;
         const user = await userModel.findOne({ email: email });
         const userResult = await QA_ResultModel.findOne({ user_ID: user._id });
+
         const questions = await QA_Model.find({
             level: level,
             department: { $in: user.department },
@@ -164,78 +165,147 @@ const markResult = async (req, res) => {
         if (userResult === null) {
             const newResult = new QA_ResultModel({
                 user_ID: user._id,
-                attempt: [[req.body]],
+                attempt: {
+                    [user.department[0]]: [[req.body]],
+                },
             });
             const data = await newResult.save();
+
+            const responseData = successResponse('Result Submitted Successfully', data);
+            return res.status(200).json(responseData);
+        } else if (
+            Object.keys(userResult.attempt).findIndex((key) => key === user.department[0]) === -1
+        ) {
+            userResult.set(`attempt.${user.department[0]}`, []);
+            await userResult.save();
+
+            const filter = {
+                user_ID: user._id,
+            };
+            const update = {
+                $push: {
+                    [`attempt.${user.department[0]}`]: [req.body],
+                },
+            };
+            const options = {
+                new: true,
+            };
+
+            const updatedUserResult = await QA_ResultModel.findOneAndUpdate(
+                filter,
+                update,
+                options
+            );
+            const data = await updatedUserResult.save();
 
             const responseData = successResponse('Result Submitted Successfully', data);
             return res.status(200).json(responseData);
         } else {
             let isResultPresent = false;
 
-            for (let i = 0; i < userResult.attempt.length; i++) {
-                const indexToUpdate = userResult.attempt[i].findIndex(
+            for (let i = 0; i < userResult.attempt[user.department[0]].length; i++) {
+                const indexToUpdate = userResult.attempt[user.department[0]][i].findIndex(
                     (item) => item.QA_ID === QA_ID
                 );
-                if (indexToUpdate === -1 && i === userResult.attempt.length - 1) {
-                    userResult.attempt[i].push(req.body);
+                if (
+                    indexToUpdate === -1 &&
+                    i === userResult.attempt[user.department[0]].length - 1
+                ) {
+                    const filter = {
+                        user_ID: user._id,
+                    };
+                    const update = {
+                        $push: {
+                            [`attempt.${user.department[0]}.${[i]}`]: req.body,
+                        },
+                    };
+                    const options = {
+                        new: true,
+                    };
+
+                    await QA_ResultModel.findOneAndUpdate(filter, update, options);
+
                     isResultPresent = true;
-                    break;
+
+                    const updatedUserResult = await QA_ResultModel.findOne({ user_ID: user._id });
+
+                    const isLengthEqual =
+                        updatedUserResult.attempt[user.department[0]][i].length ===
+                        questions.length;
+
+                    if (isLengthEqual) {
+                        let mark = 0;
+                        let speed = 0;
+                        let seconds = 0;
+
+                        updatedUserResult.attempt[user.department[0]][i].map(async (data) => {
+                            mark = mark + data.questionMark + data.answerMark;
+                            speed =
+                                speed +
+                                ((data.questionResult.split(' ').length /
+                                    data.timeTakenForQuestion) *
+                                    60 +
+                                    (data.questionResult.split(' ').length /
+                                        data.timeTakenForAnswer) *
+                                        60);
+                            seconds = seconds + data.timeTakenForQuestion + data.timeTakenForAnswer;
+                        });
+
+                        const finalMark = Math.floor(
+                            mark / (updatedUserResult.attempt[user.department[0]][i].length * 2)
+                        );
+
+                        const totalSpeed = Math.floor((speed / seconds) * 60);
+
+                        let finalSpeed;
+
+                        if (totalSpeed < 100) {
+                            finalSpeed = 'Slow';
+                        } else if (totalSpeed >= 100 && totalSpeed <= 140) {
+                            finalSpeed = 'Medium';
+                        } else {
+                            finalSpeed = 'Fast';
+                        }
+
+                        const data = {
+                            userName: user.fullName,
+                            level: 'level 1',
+                            mark: finalMark,
+                            speed: finalSpeed,
+                        };
+                        const responseData = successResponse('Level Completed', data);
+                        return res.status(200).json(responseData);
+                    } else {
+                        const responseData = successResponse(
+                            'Result Submitted Successfully',
+                            updatedUserResult.attempt[user.department[0]][i][
+                                updatedUserResult.attempt[user.department[0]][i].length - 1
+                            ]
+                        );
+                        return res.status(200).json(responseData);
+                    }
                 }
             }
             if (!isResultPresent) {
-                const newIndex = userResult.attempt.length;
-                userResult.attempt[newIndex] = [req.body];
+                const newIndex = userResult.attempt[user.department[0]].length;
+
+                const filter = {
+                    user_ID: user._id,
+                };
+                const update = {
+                    $push: {
+                        [`attempt.${user.department[0]}.${[newIndex]}`]: req.body,
+                    },
+                };
+                const options = {
+                    new: true,
+                };
+
+                const data = await QA_ResultModel.findOneAndUpdate(filter, update, options);
+
+                const responseData = successResponse('Result Submitted Successfully', data);
+                return res.status(200).json(responseData);
             }
-        }
-
-        const data = await userResult.save();
-        const updatedUserResult = await QA_ResultModel.findOne({ user_ID: user._id });
-        const attemptArrayLength = updatedUserResult.attempt.length;
-
-        const isLengthEqual =
-            updatedUserResult.attempt[attemptArrayLength - 1].length === questions.length;
-
-        if (isLengthEqual) {
-            let mark = 0;
-            let speed = 0;
-            let seconds = 0;
-            updatedUserResult.attempt[attemptArrayLength - 1].map(async (data) => {
-                mark = mark + data.questionMark + data.answerMark;
-                speed =
-                    speed +
-                    ((data.questionResult.split(' ').length / data.timeTakenForQuestion) * 60 +
-                        (data.questionResult.split(' ').length / data.timeTakenForAnswer) * 60);
-                seconds = seconds + data.timeTakenForQuestion + data.timeTakenForAnswer;
-            });
-
-            const finalMark = Math.floor(
-                mark / (updatedUserResult.attempt[attemptArrayLength - 1].length * 2)
-            );
-
-            const totalSpeed = Math.floor((speed / seconds) * 60);
-
-            let finalSpeed;
-
-            if (totalSpeed < 100) {
-                finalSpeed = 'Slow';
-            } else if (totalSpeed >= 100 && totalSpeed <= 140) {
-                finalSpeed = 'Medium';
-            } else {
-                finalSpeed = 'Fast';
-            }
-
-            const data = {
-                userName: user.fullName,
-                level: 'level 1',
-                mark: finalMark,
-                speed: finalSpeed,
-            };
-            const responseData = successResponse('Level Completed', data);
-            return res.status(200).json(responseData);
-        } else {
-            const responseData = successResponse('Result Submitted Successfully', data);
-            return res.status(200).json(responseData);
         }
     } catch (error) {
         globalErrorHandler(res, error);

@@ -59,50 +59,7 @@ const QA_ResultSchema = new mongoose.Schema({
         trim: true,
         validate: nonEmptyStringValidator,
     },
-    attempt: [
-        [
-            {
-                QA_ID: {
-                    type: String,
-                    required: true,
-                    trim: true,
-                    validate: nonEmptyStringValidator,
-                },
-                questionResult: {
-                    type: String,
-                    required: true,
-                    trim: true,
-                    validate: nonEmptyStringValidator,
-                },
-                answerResult: {
-                    type: String,
-                    required: true,
-                    trim: true,
-                    validate: nonEmptyStringValidator,
-                },
-                questionMark: {
-                    type: Number,
-                    required: true,
-                },
-                answerMark: {
-                    type: Number,
-                    required: true,
-                },
-                level: {
-                    type: Number,
-                    required: true,
-                },
-                timeTakenForQuestion: {
-                    type: Number,
-                    required: true,
-                },
-                timeTakenForAnswer: {
-                    type: Number,
-                    required: true,
-                },
-            },
-        ],
-    ],
+    attempt: { type: mongoose.Schema.Types.Mixed, default: {} },
 });
 
 const userModel = mongoose.model('user', UserSchema);
