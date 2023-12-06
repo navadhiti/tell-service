@@ -12,7 +12,6 @@ const handlePasswordEncrypt = async (password) => {
                     if (error) {
                         return reject(error);
                     }
-
                     resolve(hashedPassword);
                 });
             });

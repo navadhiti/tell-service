@@ -49,8 +49,8 @@ const QA_GetValidationSchema = Joi.object({
     level: level,
 });
 
-const updateDepartmentSchema = Joi.object({
+const post_updateDepartmentSchema = Joi.object({
     department: department,
 });
 
-export { QA_PostValidationSchema, QA_GetValidationSchema, updateDepartmentSchema };
+export { QA_PostValidationSchema, QA_GetValidationSchema, post_updateDepartmentSchema };

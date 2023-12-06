@@ -71,9 +71,11 @@ router.get(
     #swagger.method = 'get'
     #swagger.produces = ['application/json']
     
-    #swagger.parameters['query'] = {
+    #swagger.parameters['query'] = 
+    {
         in: 'query',
         name: 'index',
+        required: true,
         description: 'The index of the question is retrieve.',
         schema: {
             type: 'integer'
@@ -86,7 +88,7 @@ router.get(
     }
     ...
     else if(...) {
-        // #swagger.responses[400] = { description: 'Validaiton Error.'}
+        // #swagger.responses[400] = { description: 'Validaiton Error or Please Select the Department or You have completed your session'}
         return res.status(200).send(false);
     }
     ...

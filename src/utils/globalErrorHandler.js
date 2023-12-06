@@ -14,9 +14,10 @@ const globalErrorHandler = (res, error) => {
     ) {
         const responseData = errorResponse(200, 'Invalid Token.');
         return res.status(200).json(responseData);
+    } else {
+        const responseData = errorResponse(400, error);
+        return res.status(200).json(responseData);
     }
-    const responseData = errorResponse(400, error);
-    return res.status(200).json(responseData);
 };
 
 export default globalErrorHandler;

@@ -21,7 +21,6 @@ app.use('/api/v1', router);
 const useSchema = (schema) => (req, res, next) => {
     swaggerUi.setup(schema)(req, res, next);
 };
-
 app.use('/user/doc', swaggerUi.serve, useSchema(swaggerDocumentUser));
 app.use('/admin/doc', swaggerUi.serve, useSchema(swaggerDocumentAdmin));
 

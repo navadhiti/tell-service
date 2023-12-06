@@ -45,7 +45,7 @@ const runSwagger = async () => {
         await swaggerAutogen()(outputFileUser, ['./users/routes.js'], userDoc);
         await swaggerAutogen()(outputFileAdmin, ['./admins/routes.js'], adminDoc);
     } catch (error) {
-        logger.log('error', 'Swagger Document generate Error:', error);
+        logger.log('error', 'Swagger Document Generate Error:', error);
     }
 };
 

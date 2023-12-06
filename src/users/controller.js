@@ -2,9 +2,9 @@ import handlePasswordEncrypt from '../utils/handlePasswordEncrypt.js';
 import bcrypt from 'bcryptjs';
 import { JWT_SIGNIN_PRIVATE_KEY, JWT_ENCRYPTION_PRIVATE_KEY } from '../config.js';
 import * as jose from 'jose';
+import mongoose from 'mongoose';
 import { userModel, QA_ResultModel } from './model.js';
 import { QA_Model } from '../admins/model.js';
-
 import {
     registerValidationSchema,
     loginValidationSchema,
@@ -161,8 +161,14 @@ const markResult = async (req, res) => {
             level: level,
             department: { $in: user.department },
         });
+        const foundQA = questions.find((data) =>
+            data._id.equals(new mongoose.Types.ObjectId(QA_ID))
+        );
 
-        if (userResult === null) {
+        if (!foundQA) {
+            const responseData = errorResponse(404, 'Question Not Found');
+            return res.status(200).json(responseData);
+        } else if (userResult === null) {
             const newResult = new QA_ResultModel({
                 user_ID: user._id,
                 attempt: {
@@ -223,11 +229,13 @@ const markResult = async (req, res) => {
                         new: true,
                     };
 
-                    await QA_ResultModel.findOneAndUpdate(filter, update, options);
+                    const updatedUserResult = await QA_ResultModel.findOneAndUpdate(
+                        filter,
+                        update,
+                        options
+                    );
 
                     isResultPresent = true;
-
-                    const updatedUserResult = await QA_ResultModel.findOne({ user_ID: user._id });
 
                     const isLengthEqual =
                         updatedUserResult.attempt[user.department[0]][i].length ===

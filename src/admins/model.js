@@ -13,6 +13,7 @@ const departmentSchema = new mongoose.Schema({
             {
                 type: String,
                 required: true,
+                trim: true,
                 validate: nonEmptyStringValidator,
             },
         ],
@@ -30,11 +31,13 @@ const QA_Schema = new mongoose.Schema({
     question: {
         type: String,
         required: true,
+        trim: true,
         validate: nonEmptyStringValidator,
     },
     answer: {
         type: String,
         required: true,
+        trim: true,
         validate: nonEmptyStringValidator,
     },
     department: {
@@ -42,6 +45,7 @@ const QA_Schema = new mongoose.Schema({
             {
                 type: String,
                 required: true,
+                trim: true,
                 validate: nonEmptyStringValidator,
             },
         ],
@@ -66,11 +70,13 @@ const QA_Schema = new mongoose.Schema({
     createdBy: {
         type: String,
         required: true,
+        trim: true,
         validate: nonEmptyStringValidator,
     },
     updatedBy: {
         type: String,
         required: false,
+        trim: true,
     },
 });
 

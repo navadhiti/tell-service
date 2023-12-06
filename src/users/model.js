@@ -59,7 +59,7 @@ const QA_ResultSchema = new mongoose.Schema({
         trim: true,
         validate: nonEmptyStringValidator,
     },
-    attempt: { type: mongoose.Schema.Types.Mixed, default: {} },
+    attempt: { type: mongoose.Schema.Types.Mixed },
 });
 
 const userModel = mongoose.model('user', UserSchema);

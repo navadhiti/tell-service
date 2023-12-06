@@ -3,7 +3,7 @@ import { DepartmentModel, QA_Model } from './model.js';
 import {
     QA_PostValidationSchema,
     QA_GetValidationSchema,
-    updateDepartmentSchema,
+    post_updateDepartmentSchema,
 } from '../admins/validation.js';
 import {
     errorResponse,
@@ -44,7 +44,6 @@ const singleQA = async (req, res) => {
     } catch (error) {
         globalErrorHandler(res, error);
     }
-    getDepartment;
 };
 
 const getQA = async (req, res) => {
@@ -70,7 +69,6 @@ const getQA = async (req, res) => {
         });
 
         if (response.length >= index) {
-            //&& index !== 0
             const data = response.slice(index - 1, index);
             const dataObject = data[0].toObject();
             dataObject.totalQuestions = response.length;
@@ -89,6 +87,12 @@ const getQA = async (req, res) => {
 
 const postDepartment = async (req, res) => {
     const { department } = req.body;
+
+    const { error } = post_updateDepartmentSchema.validate({ department });
+    if (error) {
+        const responseData = validationResponse(error.message);
+        return res.status(200).json(responseData);
+    }
 
     try {
         const departmentField = await DepartmentModel.find();
@@ -137,19 +141,24 @@ const getDepartment = async (req, res) => {
 const updateUserDepartment = async (req, res) => {
     const { department } = req.body;
 
-    const { error } = updateDepartmentSchema.validate({ department });
+    const { error } = post_updateDepartmentSchema.validate({ department });
     if (error) {
         const responseData = validationResponse(error.message);
         return res.status(200).json(responseData);
     }
 
-    const user = await userModel.findOne({ email: res.locals.decodedToken.payload.email });
-
-    await user.updateOne({ $set: { department: department } });
-
-    const updatedUserDetails = await userModel.findOne({
+    const filter = {
         email: res.locals.decodedToken.payload.email,
-    });
+    };
+    const update = {
+        $set: { department: department },
+    };
+    const options = {
+        new: true,
+    };
+
+    const updatedUserDetails = await userModel.findOneAndUpdate(filter, update, options);
+
     const responseData = successResponse(
         'New Department Selected Successfully',
         updatedUserDetails.department
@@ -159,10 +168,10 @@ const updateUserDepartment = async (req, res) => {
 
 const getUserDepartment = async (req, res) => {
     try {
-        const data = await userModel.find({ email: res.locals.decodedToken.payload.email });
+        const data = await userModel.findOne({ email: res.locals.decodedToken.payload.email });
         const responseData = successResponse(
             'All Departments Retrieved Successfully',
-            data[0].department
+            data.department
         );
         return res.status(200).json(responseData);
     } catch (error) {
