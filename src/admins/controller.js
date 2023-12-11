@@ -5,11 +5,7 @@ import {
     QA_GetValidationSchema,
     post_updateDepartmentSchema,
 } from '../admins/validation.js';
-import {
-    errorResponse,
-    successResponse,
-    validationResponse,
-} from '../utils/handleServerResponse.js';
+import { successResponse, validationResponse } from '../utils/handleServerResponse.js';
 import globalErrorHandler from '../utils/globalErrorHandler.js';
 
 const singleQA = async (req, res) => {
@@ -55,17 +51,10 @@ const getQA = async (req, res) => {
         return res.status(200).json(responseData);
     }
 
-    const user = await userModel.findOne({ email: res.locals.decodedToken.payload.email });
-
-    if (user.department.length === 0) {
-        const responseData = errorResponse(400, 'Please Select the Department');
-        return res.status(200).json(responseData);
-    }
-
     try {
         const response = await QA_Model.find({
             level: level,
-            department: { $in: user.department },
+            department: 'Generic',
         });
 
         if (response.length >= index) {
