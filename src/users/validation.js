@@ -1,4 +1,4 @@
-import Joi from 'joi';
+import Joi from 'joi'; 
 
 const email = Joi.string()
     .trim()
@@ -12,10 +12,10 @@ const email = Joi.string()
     });
 const password = Joi.string()
     .trim()
-    .pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{8,12}$/)
+    .pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{8,}$/)
     .message('Invalid Password')
     .required()
-    .empty()
+    .empty() 
     .messages({
         'any.required': 'Password field is required',
         'string.empty': 'Password field is must be a non-empty',

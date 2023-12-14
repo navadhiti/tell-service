@@ -26,9 +26,9 @@ router.post(
     #swagger.produces = ['application/json']
     #swagger.consumes = ['application/json']
     
-    #swagger.parameters['body'] = {
+    #swagger.parameters['QA'] = {
         in: 'body',
-        description: 'QA Req.Body Data',
+        description: 'Question & Answer Req.Body Data',
         required: true,
         schema: {
             question: "Let me explain how this treatment works",
@@ -59,6 +59,8 @@ router.post(
     */
 );
 
+
+
 router.get(
     '/getQA',
     verifyToken,
@@ -70,18 +72,27 @@ router.get(
 
     #swagger.method = 'get'
     #swagger.produces = ['application/json']
-    
-    #swagger.parameters['query'] = 
-    {
+       
+    #swagger.parameters['level'] = {
         in: 'query',
-        name: 'index',
+        name: 'level',
         required: true,
-        description: 'The index of the question is retrieve.',
+        description: 'The level of the question is retrieve.',
         schema: {
             type: 'integer'
         }
     }
-    ...
+
+    #swagger.parameters['index'] = {
+            in: 'query',
+            name: 'index',
+            required: true,
+            description: 'The index of the question is retrieve.',
+            schema: {
+                type: 'integer'
+            }
+    }
+
     if(...) {
         // #swagger.responses[200] = { description: 'Question & Answer Retrieved Successfully.' }
         return res.status(200).send(data);

@@ -6,7 +6,7 @@
     "description": "Technology Enabled Learning Language"
   },
   "host": "localhost:3000",
-  "basePath": "/",
+  "basePath": "/api/v1/admin",
   "schemes": [
     "http",
     "https"
@@ -35,9 +35,9 @@
         ],
         "parameters": [
           {
-            "name": "body",
+            "name": "QA",
             "in": "body",
-            "description": "QA Req.Body Data",
+            "description": "Question & Answer Req.Body Data",
             "required": true,
             "schema": {
               "type": "object",
@@ -98,6 +98,15 @@
           "application/json"
         ],
         "parameters": [
+          {
+            "name": "level",
+            "in": "query",
+            "required": true,
+            "description": "The level of the question is retrieve.",
+            "schema": {
+              "type": "integer"
+            }
+          },
           {
             "name": "index",
             "in": "query",

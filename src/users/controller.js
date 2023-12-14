@@ -181,7 +181,7 @@ const markResult = async (req, res) => {
 
             const data = await newResult.save();
 
-            const responseData = successResponse('Result Submitted Successfully', data);
+            const responseData = successResponse('Result Submitted Successfully', data.attempt[department][`Level ${level}`][0][0]);
             return res.status(200).json(responseData);
         } else if (Object.keys(userResult.attempt).findIndex((key) => key === department) === -1) {
             userResult.set(`attempt.${department}.Level ${level}`, []);
@@ -208,7 +208,7 @@ const markResult = async (req, res) => {
 
             const responseData = successResponse(
                 'Result Submitted Successfully',
-                data.attempt[department][`Level ${level}`][0]
+                data.attempt[department][`Level ${level}`][0][0]
             );
             return res.status(200).json(responseData);
         } else if (
@@ -240,7 +240,7 @@ const markResult = async (req, res) => {
 
             const responseData = successResponse(
                 'Result Submitted Successfully',
-                data.attempt[department][`Level ${level}`][0]
+                data.attempt[department][`Level ${level}`][0][0]
             );
             return res.status(200).json(responseData);
         } else {
@@ -354,7 +354,7 @@ const markResult = async (req, res) => {
 
                 const data = await QA_ResultModel.findOneAndUpdate(filter, update, options);
 
-                const responseData = successResponse('Result Submitted Successfully', data);
+                const responseData = successResponse('Result Submitted Successfully', data.attempt[department][`Level ${level}`][newIndex][0]);
                 return res.status(200).json(responseData);
             }
         }

@@ -16,9 +16,9 @@ router.post(
     #swagger.produces = ['application/json']
     #swagger.consumes = ['application/json']
 
-    #swagger.parameters['body'] = {
+    #swagger.parameters['Register'] = {
         in: 'body',
-        description: 'Register Req.Body Data',
+        description: 'Req.Body Data',
         required: true,
         schema: {
             fullName: "Sethu K",
@@ -60,9 +60,9 @@ router.post(
     #swagger.produces = ['application/json']
     #swagger.consumes = ['application/json']
 
-    #swagger.parameters['body'] = {
+    #swagger.parameters['Login'] = {
         in: 'body',
-        description: 'Login Req.Body Data',
+        description: 'Req.Body Data',
         required: true,
         schema: {
             email: "sethu@gmail.com",
@@ -108,9 +108,9 @@ router.post(
     #swagger.produces = ['application/json']
     #swagger.consumes = ['application/json']
 
-    #swagger.parameters['body'] = {
+    #swagger.parameters['Result'] = {
         in: 'body',
-        description: 'Result Req.Body Data',
+        description: 'Req.Body Data',
         required: true,
         schema: {
             QA_ID: "6555c642fe134b47d29f820f",

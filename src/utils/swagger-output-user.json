@@ -6,7 +6,7 @@
     "description": "Technology Enabled Language Learning"
   },
   "host": "localhost:3000",
-  "basePath": "/",
+  "basePath": "/api/v1/user",
   "schemes": [
     "http",
     "https"
@@ -35,9 +35,9 @@
         ],
         "parameters": [
           {
-            "name": "body",
+            "name": "Register",
             "in": "body",
-            "description": "Register Req.Body Data",
+            "description": "Req.Body Data",
             "required": true,
             "schema": {
               "type": "object",
@@ -93,9 +93,9 @@
         ],
         "parameters": [
           {
-            "name": "body",
+            "name": "Login",
             "in": "body",
-            "description": "Login Req.Body Data",
+            "description": "Req.Body Data",
             "required": true,
             "schema": {
               "type": "object",
@@ -146,9 +146,9 @@
         ],
         "parameters": [
           {
-            "name": "body",
+            "name": "Result",
             "in": "body",
-            "description": "Result Req.Body Data",
+            "description": "Req.Body Data",
             "required": true,
             "schema": {
               "type": "object",
