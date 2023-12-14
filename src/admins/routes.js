@@ -59,8 +59,6 @@ router.post(
     */
 );
 
-
-
 router.get(
     '/getQA',
     verifyToken,
