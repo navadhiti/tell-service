@@ -133,6 +133,7 @@ const markResult = async (req, res) => {
         questionMark,
         answerMark,
         level,
+        scenario,
         timeTakenForQuestion,
         timeTakenForAnswer,
     } = req.body;
@@ -144,6 +145,7 @@ const markResult = async (req, res) => {
         questionMark,
         answerMark,
         level,
+        scenario,
         timeTakenForQuestion,
         timeTakenForAnswer,
     });
@@ -159,8 +161,9 @@ const markResult = async (req, res) => {
         const department = 'Generic';
 
         const questions = await QA_Model.find({
-            level: level,
             department: department,
+            level: level,
+            scenario: scenario,
         });
         const foundQA = questions.find((data) =>
             data._id.equals(new mongoose.Types.ObjectId(QA_ID))
@@ -174,7 +177,9 @@ const markResult = async (req, res) => {
                 user_ID: user._id,
                 attempt: {
                     [department]: {
-                        'Level 1': [[req.body]],
+                        [`Level ${level}`]: {
+                            [scenario]: [[req.body]],
+                        },
                     },
                 },
             });
@@ -183,11 +188,11 @@ const markResult = async (req, res) => {
 
             const responseData = successResponse(
                 'Result Submitted Successfully',
-                data.attempt[department][`Level ${level}`][0][0]
+                data.attempt[department][`Level ${level}`][scenario][0][0]
             );
             return res.status(200).json(responseData);
         } else if (Object.keys(userResult.attempt).findIndex((key) => key === department) === -1) {
-            userResult.set(`attempt.${department}.Level ${level}`, []);
+            userResult.set(`attempt.${department}.Level ${level}.${scenario}`, []);
             await userResult.save();
 
             const filter = {
@@ -195,7 +200,7 @@ const markResult = async (req, res) => {
             };
             const update = {
                 $push: {
-                    [`attempt.${department}.Level ${level}`]: [req.body],
+                    [`attempt.${department}.Level ${level}.${scenario}`]: [req.body],
                 },
             };
             const options = {
@@ -211,7 +216,7 @@ const markResult = async (req, res) => {
 
             const responseData = successResponse(
                 'Result Submitted Successfully',
-                data.attempt[department][`Level ${level}`][0][0]
+                data.attempt[department][`Level ${level}`][scenario][0][0]
             );
             return res.status(200).json(responseData);
         } else if (
@@ -219,7 +224,7 @@ const markResult = async (req, res) => {
                 (key) => key === `Level ${level}`
             ) === -1
         ) {
-            userResult.set(`attempt.${department}.Level ${level}`, []);
+            userResult.set(`attempt.${department}.Level ${level}.${scenario}`, []);
             await userResult.save();
 
             const filter = {
@@ -227,7 +232,7 @@ const markResult = async (req, res) => {
             };
             const update = {
                 $push: {
-                    [`attempt.${department}.Level ${level}`]: [req.body],
+                    [`attempt.${department}.Level ${level}.${scenario}`]: [req.body],
                 },
             };
             const options = {
@@ -243,26 +248,62 @@ const markResult = async (req, res) => {
 
             const responseData = successResponse(
                 'Result Submitted Successfully',
-                data.attempt[department][`Level ${level}`][0][0]
+                data.attempt[department][`Level ${level}`][scenario][0][0]
+            );
+            return res.status(200).json(responseData);
+        } else if (
+            Object.keys(userResult.attempt[department][`Level ${level}`]).findIndex(
+                (key) => key === scenario
+            ) === -1
+        ) {
+            userResult.set(`attempt.${department}.Level ${level}.${scenario}`, []);
+            await userResult.save();
+
+            const filter = {
+                user_ID: user._id,
+            };
+            const update = {
+                $push: {
+                    [`attempt.${department}.Level ${level}.${scenario}`]: [req.body],
+                },
+            };
+            const options = {
+                new: true,
+            };
+
+            const updatedUserResult = await QA_ResultModel.findOneAndUpdate(
+                filter,
+                update,
+                options
+            );
+            const data = await updatedUserResult.save();
+
+            const responseData = successResponse(
+                'Result Submitted Successfully',
+                data.attempt[department][`Level ${level}`][scenario][0][0]
             );
             return res.status(200).json(responseData);
         } else {
             let isResultPresent = false;
 
-            for (let i = 0; i < userResult.attempt[department][`Level ${level}`].length; i++) {
-                const indexToUpdate = userResult.attempt[department][`Level ${level}`][i].findIndex(
-                    (item) => item.QA_ID === QA_ID
-                );
+            for (
+                let i = 0;
+                i < userResult.attempt[department][`Level ${level}`][scenario].length;
+                i++
+            ) {
+                const indexToUpdate = userResult.attempt[department][`Level ${level}`][scenario][
+                    i
+                ].findIndex((item) => item.QA_ID === QA_ID);
                 if (
                     indexToUpdate === -1 &&
-                    i === userResult.attempt[department][`Level ${level}`].length - 1
+                    i === userResult.attempt[department][`Level ${level}`][scenario].length - 1
                 ) {
                     const filter = {
                         user_ID: user._id,
                     };
                     const update = {
                         $push: {
-                            [`attempt.${department}.Level ${level}.${[i]}`]: req.body,
+                            [`attempt.${department}.Level ${level}.${scenario}.${[i]}`]: req.body,
                         },
                     };
                     const options = {
@@ -278,16 +319,29 @@ const markResult = async (req, res) => {
                     isResultPresent = true;
 
                     const isLengthEqual =
-                        updatedUserResult.attempt[department][`Level ${level}`][i].length ===
-                        questions.length;
+                        updatedUserResult.attempt[department][`Level ${level}`][scenario][i]
+                            .length === questions.length;
 
-                    if (isLengthEqual) {
+                    let QA_length = 0;
+                    const levelData = updatedUserResult.attempt[department][`Level ${level}`];
+                    Object.keys(levelData).forEach((key) => {
+                        const lastArray = levelData[key][levelData[key].length - 1];
+                        QA_length = QA_length + lastArray.length;
+                    });
+
+                    const questions1 = await QA_Model.find({
+                        department: department,
+                        level: level,
+                    });
+
+                    if (questions1.length === QA_length) {
                         let mark = 0;
                         let speed = 0;
                         let seconds = 0;
 
-                        updatedUserResult.attempt[department][`Level ${level}`][i].map(
-                            async (data) => {
+                        Object.keys(levelData).forEach((key) => {
+                            const lastArray1 = levelData[key][levelData[key].length - 1];
+                            lastArray1.map((data) => {
                                 mark = mark + data.questionMark + data.answerMark;
                                 speed =
                                     speed +
@@ -299,14 +353,10 @@ const markResult = async (req, res) => {
                                             60);
                                 seconds =
                                     seconds + data.timeTakenForQuestion + data.timeTakenForAnswer;
-                            }
-                        );
+                            });
+                        });
 
-                        const finalMark = Math.floor(
-                            mark /
-                                (updatedUserResult.attempt[department][`Level ${level}`][i].length *
-                                    2)
-                        );
+                        const finalMark = Math.floor(mark / (QA_length * 2));
 
                         const totalSpeed = Math.floor((speed / seconds) * 60);
 
@@ -328,12 +378,21 @@ const markResult = async (req, res) => {
                         };
                         const responseData = successResponse('Level Completed', data);
                         return res.status(200).json(responseData);
+                    } else if (isLengthEqual) {
+                        const responseData = successResponse(
+                            `${scenario} Completed`,
+                            updatedUserResult.attempt[department][`Level ${level}`][scenario][i][
+                                updatedUserResult.attempt[department][`Level ${level}`][scenario][i]
+                                    .length - 1
+                            ]
+                        );
+                        return res.status(200).json(responseData);
                     } else {
                         const responseData = successResponse(
                             'Result Submitted Successfully',
-                            updatedUserResult.attempt[department][`Level ${level}`][i][
-                                updatedUserResult.attempt[department][`Level ${level}`][i].length -
-                                    1
+                            updatedUserResult.attempt[department][`Level ${level}`][scenario][i][
+                                updatedUserResult.attempt[department][`Level ${level}`][scenario][i]
+                                    .length - 1
                             ]
                         );
                         return res.status(200).json(responseData);
@@ -341,14 +400,15 @@ const markResult = async (req, res) => {
                 }
             }
             if (!isResultPresent) {
-                const newIndex = userResult.attempt[department][`Level ${level}`].length;
+                const newIndex = userResult.attempt[department][`Level ${level}`][scenario].length;
 
                 const filter = {
                     user_ID: user._id,
                 };
                 const update = {
                     $push: {
-                        [`attempt.${department}.Level ${level}.${[newIndex]}`]: req.body,
+                        [`attempt.${department}.Level ${level}.${scenario}.${[newIndex]}`]:
+                            req.body,
                     },
                 };
                 const options = {
@@ -359,7 +419,7 @@ const markResult = async (req, res) => {
 
                 const responseData = successResponse(
                     'Result Submitted Successfully',
-                    data.attempt[department][`Level ${level}`][newIndex][0]
+                    data.attempt[department][`Level ${level}`][scenario][newIndex][0]
                 );
                 return res.status(200).json(responseData);
             }

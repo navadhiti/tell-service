@@ -71,6 +71,10 @@ const level = Joi.number().integer().min(1).required().messages({
     'number.min': 'Level must be greater than or equal to 1',
     'any.required': 'Level parameter is required',
 });
+const scenario = Joi.string().trim().required().empty().messages({
+    'any.required': 'Scenario field is required',
+    'string.empty': 'Scenario is must be a non-empty',
+});
 const timeTakenForQuestion = Joi.number().integer().min(0).required().messages({
     'number.base': 'Time Taken for Question must be a number',
     'number.integer': 'Time Taken for Question must be an integer',
@@ -103,6 +107,7 @@ const markResutValidationSchema = Joi.object({
     questionMark: questionMark,
     answerMark: answerMark,
     level: level,
+    scenario: scenario,
     timeTakenForQuestion: timeTakenForQuestion,
     timeTakenForAnswer: timeTakenForAnswer,
 });

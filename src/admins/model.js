@@ -67,6 +67,12 @@ const QA_Schema = new mongoose.Schema({
             message: 'Level must be a positive integer greater than 1',
         },
     },
+    scenario: {
+        type: String,
+        required: true,
+        trim: true,
+        validate: nonEmptyStringValidator,
+    },
     createdBy: {
         type: String,
         required: true,

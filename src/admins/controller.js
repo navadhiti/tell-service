@@ -9,13 +9,14 @@ import { successResponse, validationResponse } from '../utils/handleServerRespon
 import globalErrorHandler from '../utils/globalErrorHandler.js';
 
 const singleQA = async (req, res) => {
-    const { question, answer, department, level, updatedBy } = req.body;
+    const { question, answer, department, level, scenario, updatedBy } = req.body;
 
     const { error } = QA_PostValidationSchema.validate({
         question,
         answer,
         department,
         level,
+        scenario,
         createdBy: res.locals.decodedToken.payload.name,
     });
     if (error) {
@@ -29,6 +30,7 @@ const singleQA = async (req, res) => {
             answer: answer,
             department: department,
             level: level,
+            scenario: scenario,
             createdBy: res.locals.decodedToken.payload.name,
             updatedBy: updatedBy,
         });
@@ -43,29 +45,60 @@ const singleQA = async (req, res) => {
 };
 
 const getQA = async (req, res) => {
-    const { index, level } = req.query;
+    const { level, scenario, index } = req.query;
 
-    const { error } = QA_GetValidationSchema.validate({ index, level });
+    const { error } = QA_GetValidationSchema.validate({ level, scenario, index });
     if (error) {
         const responseData = validationResponse(error.message);
         return res.status(200).json(responseData);
     }
 
+    function isDecimal(number) {
+        return number % 1 !== 0;
+    }
+
     try {
         const response = await QA_Model.find({
-            level: level,
             department: 'Generic',
+            level: level,
+            scenario: scenario,
         });
 
         if (response.length >= index) {
-            const data = response.slice(index - 1, index);
+            const approximateInteger = Math.round(index);
+
+            const data = response.slice(approximateInteger - 1, approximateInteger);
             const dataObject = data[0].toObject();
             dataObject.totalQuestions = response.length;
-            const responseData = successResponse(
-                'Question & Answer Retrieved Successfully',
-                dataObject
-            );
-            return res.status(200).json(responseData);
+
+            const finalIndex = parseFloat(index);
+
+            if (isDecimal(finalIndex)) {
+                const responseData = successResponse('Question & Answer Retrieved Successfully', {
+                    _id: dataObject._id,
+                    question: dataObject.question,
+                    department: dataObject.department,
+                    level: dataObject.level,
+                    scenario: dataObject.scenario,
+                    createdBy: dataObject.createdBy,
+                    __v: dataObject.__v,
+                    totalQuestions: dataObject.totalQuestions,
+                });
+                return res.status(200).json(responseData);
+            } else {
+                const responseData = successResponse('Question & Answer Retrieved Successfully', {
+                    _id: dataObject._id,
+                    question: dataObject.question,
+                    answer: dataObject.answer,
+                    department: dataObject.department,
+                    level: dataObject.level,
+                    scenario: dataObject.scenario,
+                    createdBy: dataObject.createdBy,
+                    __v: dataObject.__v,
+                    totalQuestions: dataObject.totalQuestions,
+                });
+                return res.status(200).json(responseData);
+            }
         }
         const responseData = validationResponse('You have completed your session');
         return res.status(200).json(responseData);

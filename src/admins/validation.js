@@ -25,14 +25,17 @@ const level = Joi.number().integer().min(1).required().messages({
     'number.min': 'Level must be greater than or equal to 1',
     'any.required': 'Level parameter is required',
 });
+const scenario = Joi.string().trim().required().empty().messages({
+    'any.required': 'Scenario field is required',
+    'string.empty': 'Scenario is must be a non-empty',
+});
 const createdBy = Joi.string().trim().required().empty().messages({
     'any.required': 'CreatedBy field is required',
     'string.empty': 'CreatedBy is must be a non-empty',
 });
 
-const index = Joi.number().integer().min(1).required().messages({
+const index = Joi.number().greater(0.4).required().messages({
     'number.base': 'Index must be a number',
-    'number.min': 'Index must be greater than or equal to 1',
     'any.required': 'Index parameter is required',
 });
 
@@ -41,12 +44,14 @@ const QA_PostValidationSchema = Joi.object({
     answer: answer,
     department: department,
     level: level,
+    scenario: scenario,
     createdBy: createdBy,
 });
 
 const QA_GetValidationSchema = Joi.object({
     index: index,
     level: level,
+    scenario: scenario,
 });
 
 const post_updateDepartmentSchema = Joi.object({
