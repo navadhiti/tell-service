@@ -45,9 +45,9 @@ const singleQA = async (req, res) => {
 };
 
 const getQA = async (req, res) => {
-    const { scenario, index } = req.query;
+    const { index } = req.query;
 
-    const { error } = QA_GetValidationSchema.validate({ scenario, index });
+    const { error } = QA_GetValidationSchema.validate({ index });
     if (error) {
         const responseData = validationResponse(error.message);
         return res.status(200).json(responseData);
@@ -62,18 +62,18 @@ const getQA = async (req, res) => {
     }
 
     try {
-        const response = await QA_Model.find({
+        const questions = await QA_Model.find({
             department: 'Generic',
             level: level,
-            scenario: scenario,
         });
 
-        if (response.length >= index) {
+        if (questions.length >= index) {
             const approximateInteger = Math.round(index);
 
-            const data = response.slice(approximateInteger - 1, approximateInteger);
+            const data = questions.slice(approximateInteger - 1, approximateInteger);
+
             const dataObject = data[0].toObject();
-            dataObject.totalQuestions = response.length;
+            dataObject.totalQuestions = questions.length;
 
             const finalIndex = parseFloat(index);
 
