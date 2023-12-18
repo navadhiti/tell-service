@@ -377,11 +377,13 @@ const markResult = async (req, res) => {
                             speed: finalSpeed,
                         };
 
-                        await userModel.updateOne(
-                            { _id: user._id },
-                            { $set: { level: level + 1 } }
-                        );
-
+                        if(finalMark >=50) {
+                            await userModel.updateOne(
+                                { _id: user._id },
+                                { $set: { level: level + 1 } }
+                            );
+                        }
+                        
                         const responseData = successResponse('Level Completed', data);
                         return res.status(200).json(responseData);
                     } else if (isLengthEqual) {
