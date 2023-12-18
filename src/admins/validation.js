@@ -50,7 +50,6 @@ const QA_PostValidationSchema = Joi.object({
 
 const QA_GetValidationSchema = Joi.object({
     index: index,
-    level: level,
     scenario: scenario,
 });
 
