@@ -388,7 +388,7 @@ const markResult = async (req, res) => {
                         return res.status(200).json(responseData);
                     } else if (isLengthEqual) {
                         const responseData = successResponse(
-                            `${scenario} Completed`,
+                            'Result Submitted Successfully',
                             updatedUserResult.attempt[department][`Level ${level}`][scenario][i][
                                 updatedUserResult.attempt[department][`Level ${level}`][scenario][i]
                                     .length - 1
