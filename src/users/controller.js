@@ -384,7 +384,7 @@ const markResult = async (req, res) => {
                             );
                         }
 
-                        const responseData = successResponse(`Level-${level} Completed`, data);
+                        const responseData = successResponse(`Level ${level} Completed`, data);
                         return res.status(200).json(responseData);
                     } else if (isLengthEqual) {
                         const responseData = successResponse(
