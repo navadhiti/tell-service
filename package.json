@@ -1,0 +1,41 @@
+{
+    "name": "project-tell",
+    "version": "1.0.0",
+    "description": "Technology Enabled Language Learning",
+    "type": "module",
+    "engines": {
+        "node": "18.18.2",
+        "npm": "9.8.1"
+    },
+    "main": "src/app.js",
+    "scripts": {
+        "start": "nodemon src/app.js",
+        "lint:fix": "eslint src/ --fix && prettier src/ --write",
+        "prepare": "husky install",
+        "swagger": "node src/swagger.js"
+    },
+    "author": "",
+    "license": "ISC",
+    "homepage": "https://github.com/navadhiti/tell-service#readme",
+    "devDependencies": {
+        "eslint": "8.51.0",
+        "eslint-config-prettier": "9.0.0",
+        "eslint-plugin-prettier": "5.0.1",
+        "husky": "8.0.0",
+        "nodemon": "3.0.1",
+        "prettier": "3.0.3"
+    },
+    "dependencies": {
+        "bcryptjs": "2.4.3",
+        "cors": "2.8.5",
+        "dotenv": "16.3.1",
+        "express": "4.18.2",
+        "joi": "17.11.0",
+        "jose": "5.1.1",
+        "mongoose": "7.6.1",
+        "swagger-autogen": "2.23.7",
+        "swagger-ui-express": "5.0.0",
+        "uid": "2.0.2",
+        "winston": "3.11.0"
+    }
+}
