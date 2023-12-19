@@ -158,6 +158,10 @@ const markResult = async (req, res) => {
         const email = res.locals.decodedToken.payload.email;
         const user = await userModel.findOne({ email: email });
         const userResult = await QA_ResultModel.findOne({ user_ID: user._id });
+
+        if (!user.level) {
+            await userModel.updateOne({ _id: user._id }, { $set: { level: 1 } });
+        }
         const department = 'Generic';
 
         const questions = await QA_Model.find({
