@@ -299,7 +299,7 @@ const markResult = async (req, res) => {
                         let seconds = 0;
 
                         lastArray.map((data) => {
-                            mark = mark + data.questionMark + data.answerMark;
+                            mark = mark + parseInt(data.questionMark) + parseInt(data.answerMark);
                             speed =
                                 speed +
                                 ((data.questionResult.split(' ').length /
