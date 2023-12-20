@@ -55,7 +55,7 @@ const getQA = async (req, res) => {
 
     const email = res.locals.decodedToken.payload.email;
     const user = await userModel.findOne({ email: email });
-    const level = user.level === undefined ? 1 : user.level;
+    const level = user.level === undefined || user.level > 3 ? 1 : user.level;
 
     function isDecimal(number) {
         return number % 1 !== 0;

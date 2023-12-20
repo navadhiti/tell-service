@@ -159,7 +159,7 @@ const markResult = async (req, res) => {
         const user = await userModel.findOne({ email: email });
         const userResult = await QA_ResultModel.findOne({ user_ID: user._id });
 
-        if (!user.level) {
+        if (!user.level || user.level > 3) {
             await userModel.updateOne({ _id: user._id }, { $set: { level: 1 } });
         }
         const department = 'Generic';
