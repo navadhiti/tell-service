@@ -177,6 +177,10 @@
                   "type": "number",
                   "example": 1
                 },
+                "scenario": {
+                  "type": "string",
+                  "example": "Post Surgery"
+                },
                 "timeTakenForQuestion": {
                   "type": "number",
                   "example": 5

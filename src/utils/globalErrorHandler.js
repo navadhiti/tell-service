@@ -4,9 +4,6 @@ const globalErrorHandler = (res, error) => {
     if (error.name == 'ValidationError') {
         const responseData = validationResponse(error.message);
         return res.status(200).json(responseData);
-    } else if (error.level == 'error') {
-        const responseData = errorResponse(500, error.message);
-        return res.status(200).json(responseData);
     } else if (
         error.code == 'ERR_JWE_DECRYPTION_FAILED' ||
         error.code == 'ERR_JWE_INVALID' ||

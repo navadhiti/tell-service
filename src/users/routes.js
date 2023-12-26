@@ -119,6 +119,7 @@ router.post(
             questionMark: 80,
             answerMark: 70,
             level: 1,
+            scenario: "Post Surgery",
             timeTakenForQuestion: 5,
             timeTakenForAnswer: 3
         }
